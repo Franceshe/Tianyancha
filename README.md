@@ -20,7 +20,7 @@
 1. 使用命令行工具执行`/Tianyancha.py`
 3. 程序开始运行，对分类信息开始依次爬取，输出结果范例为`中信.xlsx`
 
-~~~~
+<del>
 ### 3. 图形界面(GUI)
 打包为本地程序，支持[Mac](https://py2app.readthedocs.io/en/latest/)/[Windows](http://www.py2exe.org/)。
 
@@ -31,7 +31,7 @@
 部署：Heroku/青云
 
 未开始。
-~~~~
+</del>
 
 ## 改进方向
 1. 性能提升
