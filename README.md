@@ -21,6 +21,7 @@
 3. 程序开始运行，对分类信息开始依次爬取，输出结果范例为`中信.xlsx`
 
 <del>
+
 ### 3. 图形界面(GUI)
 打包为本地程序，支持[Mac](https://py2app.readthedocs.io/en/latest/)/[Windows](http://www.py2exe.org/)。
 
