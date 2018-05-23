@@ -175,8 +175,8 @@ def gen_excel(table_dict, keyword):
 def get_company_info(keyword):
     url = 'https://www.tianyancha.com/login'
     url1 = 'http://www.tianyancha.com/search?key=%s&checkFrom=searchBox' % keyword
-    username = '13488895246'
-    password = 'abcd1234'
+    username = 'XXXX'
+    password = 'XXXX'
 
     driver = open_browser(url)
     driver = log_in(driver)
