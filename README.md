@@ -1,5 +1,5 @@
 # Tianyancha
-天眼查企业工商信息下载工具，一行代码将目标企业的工商信息分门别类地保存为Excel文件。欢迎根据`改进方向`Pull-a-request。
+天眼查企业工商信息下载工具，一行代码将目标企业的工商信息分门别类地保存为Excel文件。欢迎根据[改进方向](https://github.com/qzcool/Tianyancha#%E6%94%B9%E8%BF%9B%E6%96%B9%E5%90%91)Pull-a-request。
 
 ## 运行依赖
 1. [Chrome浏览器](https://www.google.com/chrome/)
@@ -31,6 +31,7 @@
 部署：Heroku/青云
 
 未开始。
+
 </del>
 
 ## 改进方向
