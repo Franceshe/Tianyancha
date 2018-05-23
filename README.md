@@ -3,9 +3,9 @@
 
 ## 运行依赖
 1. [Chrome浏览器](https://www.google.com/chrome/)
-2. Chrome-webdriver
-  1. 直接下载仓库到本地后，将`/Chrome-webdriver/`中的`chromedriver.exe`(Windows)或`chromedriver.dmg`(Mac)移动到本地Python安装目录下。
-  2. 官方下载地址请[点击这里](https://sites.google.com/a/chromium.org/chromedriver/downloads)(需要代理访问)。
+2. Chrome-webdriver。将`/Chrome-webdriver/`中的`chromedriver.exe`(Windows)或`chromedriver.dmg`(Mac)移动到本地Python安装目录下。
+  1. [百度网盘下载](https://pan.baidu.com/s/1zMSlbRtL6RHhJdp0NL0bcg)
+  2. [官方下载](https://sites.google.com/a/chromium.org/chromedriver/downloads)(需要代理访问)
 
 ## 使用方法
 **下载仓库到本地后**，根据个人情况选择：
