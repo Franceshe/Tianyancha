@@ -41,3 +41,4 @@
   1. 非阻塞方法：代理池，引用，Headers的设置
 2. API化：类似`get_company_info(keyword)`
 3. Browser-driver: 使用PhantomJS代替Chrome-webdriver
+4. 数字和中文字符反爬虫编码字体攻克
