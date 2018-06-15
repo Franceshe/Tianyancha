@@ -14,12 +14,12 @@
 1. [Jupyter Notebook](http://jupyter.org/)，建议使用[Anaconda](https://www.anaconda.com/download/)下载安装运行环境。
 1. 打开`/JupyterNotebook/Tianyancha.ipynb`
 3. 输入查询公司的名称并运行所有代码块
-5. 程序开始运行，对分类信息开始依次爬取，输出结果范例为`中信.xlsx`
+5. 程序开始运行，对分类信息开始依次爬取，输出结果范例为`000810 创维数字.xlsx`
 
 ### 2. 运行.py文件
 ![demo](https://user-images.githubusercontent.com/10396208/40413412-5875fa46-5ea8-11e8-975a-546290cb746c.gif)
 1. 使用命令行工具执行`/Tianyancha.py`
-3. 程序开始运行，对分类信息开始依次爬取，输出结果范例为`中信.xlsx`
+3. 程序开始运行，对分类信息开始依次爬取，输出结果范例为`000810 创维数字.xlsx`
 
 <del>
 
