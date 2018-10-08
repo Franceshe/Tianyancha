@@ -8,33 +8,10 @@
     2. [官方下载](https://sites.google.com/a/chromium.org/chromedriver/downloads)(需要代理访问)
 
 ## 使用方法
-**下载仓库到本地后**，根据个人情况选择：
-
-### 1. Jupyter Notebook
-1. [Jupyter Notebook](http://jupyter.org/)，建议使用[Anaconda](https://www.anaconda.com/download/)下载安装运行环境。
-1. 打开`/JupyterNotebook/Tianyancha.ipynb`
-3. 输入查询公司的名称并运行所有代码块
-5. 程序开始运行，对分类信息开始依次爬取，输出结果范例为`000810 创维数字.xlsx`
-
-### 2. 运行.py文件
+**下载仓库到本地后**，运行.py文件：
 ![demo](https://user-images.githubusercontent.com/10396208/40413412-5875fa46-5ea8-11e8-975a-546290cb746c.gif)
 1. 使用命令行工具执行`/Tianyancha.py`
 3. 程序开始运行，对分类信息开始依次爬取，输出结果范例为`000810 创维数字.xlsx`
-
-<del>
-
-### 3. 图形界面(GUI)
-打包为本地程序，支持[Mac](https://py2app.readthedocs.io/en/latest/)/[Windows](http://www.py2exe.org/)。
-
-进行中，用户名/密码未正确设置。
-
-### 4. Web App
-服务化。优点是自主性高，缺点是并发IP请求大。
-部署：Heroku/青云
-
-未开始。
-
-</del>
 
 ## 改进方向
 1. 性能提升
