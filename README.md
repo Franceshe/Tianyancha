@@ -12,7 +12,7 @@
 
 ![demo](https://user-images.githubusercontent.com/10396208/40413412-5875fa46-5ea8-11e8-975a-546290cb746c.gif)
 
-1. 使用命令行工具执行`/Tianyancha.py`
+1. 使用命令行工具执行`tianyancha.py`
 3. 程序开始运行，对分类信息开始依次爬取，输出结果范例为`000810 创维数字.xlsx`
 
 ## 改进方向
