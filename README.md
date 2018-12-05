@@ -16,7 +16,8 @@
 3. 程序开始运行，对分类信息开始依次爬取，输出结果范例为`000810 创维数字.xlsx`
 
 ## 捐助 Donation
-
+![_](https://user-images.githubusercontent.com/10396208/49501270-6dcd4580-f8ad-11e8-89c9-ff30922df917.jpg)
+![_](https://user-images.githubusercontent.com/10396208/49501461-e03e2580-f8ad-11e8-8c21-3cb9b71cb18a.jpg)
 
 ## 改进方向
 1. 性能提升
