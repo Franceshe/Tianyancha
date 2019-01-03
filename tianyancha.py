@@ -9,7 +9,7 @@ import numpy as np
 import pandas as pd
 from bs4 import BeautifulSoup
 from fake_useragent import UserAgent
-import requests, time, re, math, openpyxl, datetime, os, shutil, psutil, platform, pyautogui, subprocess, webbrowser
+import json, requests, time, re, math, openpyxl, datetime, os, shutil, psutil, platform, pyautogui, subprocess, webbrowser
 from tqdm import *
 import xlwings as xw
 from selenium import webdriver
@@ -17,7 +17,7 @@ from selenium import webdriver
 class Tianyancha():
 
     # 常量定义
-    url = 'https://www.tianyancha.com/login'
+    url = 'https://www.tianyancha.com'
 
     def __init__(self, username, password):
         self.username = username
@@ -28,18 +28,42 @@ class Tianyancha():
     def log_in(self):
         # 打开浏览器
         driver = webdriver.Chrome()
+        ## TODO:加入fake_userAgent?
         driver.get(self.url)
 
-        # 模拟登陆
-        driver.find_element_by_xpath(
-            ".//*[@id='web-content']/div/div/div/div[2]/div/div[2]/div[2]/div[2]/div[2]/input"). \
-            send_keys(self.username)
-        driver.find_element_by_xpath(
-            ".//*[@id='web-content']/div/div/div/div[2]/div/div[2]/div[2]/div[2]/div[3]/input"). \
-            send_keys(self.password)
-        driver.find_element_by_xpath(
-            ".//*[@id='web-content']/div/div/div/div[2]/div/div[2]/div[2]/div[2]/div[5]").click()
-        time.sleep(1)
+        # time.sleep(15)
+        # 切换到密码登录选项页
+        # driver.find_element_by_xpath(u"(.//*[normalize-space(text()) and normalize-space(.)='快捷登录'])[1]/following::div[1]").click()
+        # driver.find_element_by_partial_link_text('密码登录').click()
+        # driver.find_elements_by_css_selector('div.title')[-1].click()
+        # driver.find_element_by_xpath("//div[@class='title-tab text-center']/div[-1]").click()
+
+        # # 模拟登陆
+        # # driver.find_element_by_xpath(u"(.//*[normalize-space(text()) and normalize-space(.)='请输入手机号'])[3]/following::input[1]"). \
+        # driver.find_element_by_partial_link_text('请输入手机号') \
+        #     .send_keys(self.username)
+        #
+        # # driver.find_element_by_xpath(u"(.//*[normalize-space(text()) and normalize-space(.)='请输入手机号'])[3]/following::input[2]"). \
+        # driver.find_element_by_partial_link_text('请输入密码')  \
+        #     .send_keys(self.password)
+        #
+        # # driver.find_element_by_xpath(u"(.//*[normalize-space(text()) and normalize-space(.)='请输入手机号'])[3]/following::input[2]")\
+        # driver.find_element_by_link_text('登录') \
+        #     .click()
+        #
+        # time.sleep(1)
+        f1 = open('cookies.txt')
+        cookie = f1.read()
+        cookie = json.loads(cookie)
+        for c in cookie:
+            driver.add_cookie(c)
+        # # 刷新页面
+        driver.refresh()
+        # # print ("".join(cookies))
+        # f1 = open('cookie.txt', 'w')
+        # f1.write(json.dumps(cookies))
+        # f1.close
+
         return driver
 
     def tianyancha_scraper(self, keyword,change_page_interval=2):
@@ -311,3 +335,7 @@ class Tianyancha():
         # # 个性操作
         # os.makedirs(path+'/'+'clients'+'/'+ str(i+1) + '. ' + keyword + ' ' + keyword_list_name[i].replace(' ',''))
         # shutil.move(path+'/'+keyword+'.xlsx',path+'/'+'clients'+'/'+ str(i+1) + '. ' + keyword + ' ' + keyword_list_name[i].replace(' ','') +'/'+keyword + ' ' + keyword_list_name[i].replace(' ','') + '.xlsx')
+
+if __name__ == '__main__':
+    table_dict = Tianyancha(username='13488895246', password='abcd1234').tianyancha_scraper(keyword='北京鸿智慧通实业有限公司')
+    print (table_dict)
