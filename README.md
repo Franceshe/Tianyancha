@@ -3,9 +3,10 @@
 
 ## 运行依赖
 1. [Chrome浏览器](https://www.google.com/chrome/)
-2. Chrome-webdriver。将`chromedriver.exe`(Windows)或`chromedriver.dmg`(Mac)移动到本地Python安装目录下。
+2. Chrome-webdriver：将`chromedriver.exe`(Windows)或`chromedriver.dmg`(Mac)移动到本地Python安装目录下。
     1. [百度网盘下载](https://pan.baidu.com/s/1zMSlbRtL6RHhJdp0NL0bcg)
     2. [官方下载](https://sites.google.com/a/chromium.org/chromedriver/downloads)(需要代理访问)
+3. Requirement.txt
 
 ## 使用方法
 **下载仓库到本地后**，运行.py文件：
@@ -17,14 +18,8 @@
 
 ## 捐助 Donation
 <img src="https://user-images.githubusercontent.com/10396208/49501270-6dcd4580-f8ad-11e8-89c9-ff30922df917.jpg" width="300" height="300" />
-<!---
+<!--- Alipay
 <img src="https://user-images.githubusercontent.com/10396208/49501461-e03e2580-f8ad-11e8-8c21-3cb9b71cb18a.jpg" width="300" />
 -->
 
 
-## 改进方向
-1. 性能提升
-  1. 非阻塞方法：代理池，引用，Headers的设置
-2. API化：类似`get_company_info(keyword)`
-3. Browser-driver: 使用PhantomJS代替Chrome-webdriver
-4. 数字和中文字符反爬虫编码字体攻克
