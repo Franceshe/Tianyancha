@@ -29,15 +29,15 @@ class Tianyancha():
 
 
         # 模拟登陆：GUI自动化
-        ## TODO:根据不同系统选择对应的快捷键
+        # 最大化窗口以方便准确定位
         if platform.system() == 'Windows':
-            pyautogui.hotkey('alt', 'space') # 最大化窗口以方便准确定位
+            pyautogui.hotkey('alt', 'space')
             pyautogui.press('x')
         elif platform.system() == 'Darwin':
             pyautogui.hotkey('ctrl', 'command', 'f')
         else:
             print ('暂时无法将Linux系统窗口最大化，请在5秒休眠期内手动将窗口最大化以保证后续流程顺利。')
-            pass
+            time.sleep(5)
 
         # 防止用户已经将选项卡切换到了"密码登录"使得login_option.png因为下方出现蓝色小条而无法匹配，使用Try-Except提高程序稳健性
         try:
@@ -334,5 +334,5 @@ class Tianyancha():
         # shutil.move(path+'/'+keyword+'.xlsx',path+'/'+'clients'+'/'+ str(i+1) + '. ' + keyword + ' ' + keyword_list_name[i].replace(' ','') +'/'+keyword + ' ' + keyword_list_name[i].replace(' ','') + '.xlsx')
 
 if __name__ == '__main__':
-    table_dict = Tianyancha(username='13488895246', password='abcd1234')#tianyancha_scraper(keyword='北京鸿智慧通实业有限公司')
+    table_dict = Tianyancha(username='13488895246', password='abcd1234').tianyancha_scraper(keyword='北京鸿智慧通实业有限公司')
     print (table_dict)
