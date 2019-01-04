@@ -13,11 +13,12 @@ import json, requests, time, re, math, openpyxl, datetime, os, shutil, psutil, p
 from tqdm import *
 import xlwings as xw
 from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
 
 class Tianyancha():
 
     # 常量定义
-    url = 'https://www.tianyancha.com'
+    url = 'https://www.tianyancha.com/login'
 
     def __init__(self, username, password):
         self.username = username
@@ -26,43 +27,85 @@ class Tianyancha():
 
     # 登录天眼查
     def log_in(self):
-        # 打开浏览器
+        # # Fake User Header
+        # ua = UserAgent().random
+        # print(ua)
+        # chrome_options = webdriver.ChromeOptions()
+        # prefs = {
+        #     'profile.default_content_setting_values': {
+        #         # 也可以这样写，两种都正确
+        #         # 'profile.default_content_settings': {
+        #         'images': 2,  # 不加载图片
+        #         'javascript': 2,  # 不加载JS
+        #         "User-Agent": ua,  # 更换UA
+        #     }
+        # }
+        # chrome_options.add_experimental_option("prefs", prefs)
+        # driver = webdriver.Chrome(chrome_options=chrome_options)
         driver = webdriver.Chrome()
-        ## TODO:加入fake_userAgent?
-        driver.get(self.url)
 
+
+        # 打开浏览器
+        driver.get(self.url)
+        driver.delete_all_cookies()
+
+
+        # # 模拟登陆：手动，拿到Cookies的尝试
         # time.sleep(15)
-        # 切换到密码登录选项页
+
+
+        # # 模拟登陆：Selenium定位元素
         # driver.find_element_by_xpath(u"(.//*[normalize-space(text()) and normalize-space(.)='快捷登录'])[1]/following::div[1]").click()
         # driver.find_element_by_partial_link_text('密码登录').click()
         # driver.find_elements_by_css_selector('div.title')[-1].click()
         # driver.find_element_by_xpath("//div[@class='title-tab text-center']/div[-1]").click()
-
-        # # 模拟登陆
         # # driver.find_element_by_xpath(u"(.//*[normalize-space(text()) and normalize-space(.)='请输入手机号'])[3]/following::input[1]"). \
         # driver.find_element_by_partial_link_text('请输入手机号') \
         #     .send_keys(self.username)
-        #
         # # driver.find_element_by_xpath(u"(.//*[normalize-space(text()) and normalize-space(.)='请输入手机号'])[3]/following::input[2]"). \
         # driver.find_element_by_partial_link_text('请输入密码')  \
         #     .send_keys(self.password)
-        #
         # # driver.find_element_by_xpath(u"(.//*[normalize-space(text()) and normalize-space(.)='请输入手机号'])[3]/following::input[2]")\
         # driver.find_element_by_link_text('登录') \
         #     .click()
-        #
         # time.sleep(1)
-        f1 = open('cookies.txt')
-        cookie = f1.read()
-        cookie = json.loads(cookie)
-        for c in cookie:
-            driver.add_cookie(c)
-        # # 刷新页面
-        driver.refresh()
-        # # print ("".join(cookies))
-        # f1 = open('cookie.txt', 'w')
-        # f1.write(json.dumps(cookies))
-        # f1.close
+
+
+        # # 模拟登陆：Cookies
+        # f1 = open('cookies.txt')
+        # cookie = f1.read()
+        # cookie = json.loads(cookie)
+        # for c in cookie:
+        #     driver.add_cookie(c)
+        #     print (c)
+
+
+        # 模拟登陆：GUI自动化
+        ## TODO:根据不同系统选择对应的快捷键
+        pyautogui.hotkey('alt','space') # 最大化窗口以方便准确定位
+        pyautogui.press('x')
+
+        # 防止用户已经将选项卡切换到了"密码登录"使得login_option.png因为下方出现蓝色小条而无法匹配，使用Try-Except提高程序稳健性
+        try:
+            x, y = pyautogui.locateCenterOnScreen('login_option.png')
+            print (x, y)
+            pyautogui.click(x, y)
+        except:
+            pass
+
+        x, y = pyautogui.locateCenterOnScreen('login_id.png')
+        print (x, y)
+        pyautogui.click(x, y)
+        pyautogui.typewrite(self.username)
+
+        x, y = pyautogui.locateCenterOnScreen('login_password.png')
+        print (x, y)
+        pyautogui.click(x, y)
+        pyautogui.typewrite(self.password)
+
+        x, y = pyautogui.locateCenterOnScreen('login_button.png')
+        print (x, y)
+        pyautogui.click(x, y)
 
         return driver
 
@@ -337,5 +380,5 @@ class Tianyancha():
         # shutil.move(path+'/'+keyword+'.xlsx',path+'/'+'clients'+'/'+ str(i+1) + '. ' + keyword + ' ' + keyword_list_name[i].replace(' ','') +'/'+keyword + ' ' + keyword_list_name[i].replace(' ','') + '.xlsx')
 
 if __name__ == '__main__':
-    table_dict = Tianyancha(username='13488895246', password='abcd1234').tianyancha_scraper(keyword='北京鸿智慧通实业有限公司')
+    table_dict = Tianyancha(username='13488895246', password='abcd1234')#tianyancha_scraper(keyword='北京鸿智慧通实业有限公司')
     print (table_dict)
