@@ -4,7 +4,7 @@
 ## 使用方法
 输入更换为自己的天眼查账户、密码和查询关键字。
     
-    from Tianyancha import tianyancha
+    from tianyancha import Tianyancha
     table_dict = Tianyancha(username='User', password='Password').tianyancha_scraper(keyword='Keyword')
 
 <!--- ![demo](https://user-images.githubusercontent.com/10396208/40413412-5875fa46-5ea8-11e8-975a-546290cb746c.gif) -->
