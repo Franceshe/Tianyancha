@@ -27,15 +27,17 @@ class Tianyancha():
         driver.get(self.url)
         driver.delete_all_cookies()
 
-
         # 模拟登陆：GUI自动化
         # 最大化窗口以方便准确定位
+        # TODO：将跨系统识别写进文章，作为human-centered design的例子
         if platform.system() == 'Windows':
             pyautogui.hotkey('alt', 'space')
+            time.sleep(0.1)
             pyautogui.press('x')
         elif platform.system() == 'Darwin':
             pyautogui.hotkey('ctrl', 'command', 'f')
         else:
+            # TODO:Linux系统最大化的快捷键super+up arrow key的植入
             print ('暂时无法将Linux系统窗口最大化，请在5秒休眠期内手动将窗口最大化以保证后续流程顺利。')
             time.sleep(5)
 
@@ -44,8 +46,9 @@ class Tianyancha():
             x, y = pyautogui.locateCenterOnScreen('./src/login_option.png')
             print (x, y)
             pyautogui.click(x, y)
-        except:
-            pass
+        # TODO：将exception的必须性写入文章，要不然会隐藏错误
+        except Exception as e:
+            print (e)
 
         x, y = pyautogui.locateCenterOnScreen('./src/login_id.png')
         print (x, y)
@@ -63,25 +66,25 @@ class Tianyancha():
 
         return driver
 
+    # 定义天眼查爬虫
     def tianyancha_scraper(self, keyword,change_page_interval=2):
-        # 定义天眼查爬虫
-
-        ## 顺带的名称检查功能，利用天眼查的模糊搜索功能
+        # 公司搜索：顺带的名称检查功能，利用天眼查的模糊搜索能力
+        # TODO：将借用模糊搜索的思路写进宣传文章。
         def search_company(driver, url1):
             driver.get(url1)
             time.sleep(1)
             content = driver.page_source.encode('utf-8')
             soup1 = BeautifulSoup(content, 'lxml')
             url2 = soup1.find('div',class_='header').find('a', class_="name ").attrs['href']
-        #     ## 如果搜索有误，手工定义URL2地址
-        #     url2 = 'https://www.tianyancha.com/company/28472888'
+            # TODO: 如果搜索有误，手工定义URL2地址。有无改善方案？
             driver.get(url2)
             return driver
 
-        ## Base_info稳健性
+        # TODO: 改善Base_info稳健性
         def get_base_info(driver):
             base_table = {}
-            base_table['名称'] = driver.find_element_by_xpath("//div[@id='company_web_top']/div[2]/div[2]/div/h1").text
+            # TODO:抽象化：频繁变换点
+            base_table['名称'] = driver.find_element_by_xpath("//div[@class='header']/h1").text
             base_info = driver.find_element_by_class_name('detail')
 
             ## 爬取数据不完整,要支持展开和多项合并
@@ -132,9 +135,8 @@ class Tianyancha():
 
             return pd.DataFrame([base_table])
 
-
         # 特殊处理：主要人员
-        ## staff_info定位不准？
+        # TODO: staff_info定位不准？
         def get_staff_info(driver):
             staff_list = []
             staff_info = driver.find_elements_by_xpath("//div[@class='in-block f14 new-c5 pt9 pl10 overflow-width vertival-middle new-border-right']")
@@ -145,9 +147,8 @@ class Tianyancha():
             staff_table = pd.DataFrame(staff_list, columns=['职位', '人员名称'])
             return staff_table
 
-
         # 特殊处理:上市公告
-        ## 加入类别搜索功能
+        # TODO:加入类别搜索功能
         def get_announcement_info(driver):
             announcement_df = pd.DataFrame(columns=['序号','日期','上市公告','上市公告网页链接']) ## 子函数自动获取columns
             ### 函数化
@@ -190,7 +191,6 @@ class Tianyancha():
                     ###
             return announcement_df
 
-
         def tryonclick(table): # table实质上是selenium WebElement
             # 测试是否有翻页
             ## 把条件判断写进tryonclick中
@@ -213,11 +213,14 @@ class Tianyancha():
                 ontapflag = 0
             return ontapflag
 
-        def change_page(table, df):
-            ##完善
-            PageCount = table.find_element_by_class_name('company_pager').text #历史class_name（天眼查的反爬措施）：'total',
-            PageCount = re.sub("\D", "", PageCount)  # 使用正则表达式取字符串中的数字 ；\D表示非数字的意思
+        def change_page(table, df, driver):
+            # TODO:抽象化：频繁变换点
+            # PageCount = table.find_element_by_class_name('company_pager').text #历史class_name（天眼查的反爬措施）：'total'
+            # PageCount = re.sub("\D", "", PageCount)  # 使用正则表达式取字符串中的数字 ；\D表示非数字的意思
+            PageCount = len(table.find_elements_by_xpath(".//ul[@class='pagination']/li")) - 1
+
             for i in range(int(PageCount) - 1):
+                # TODO:抽象化：频繁变换点
                 button = table.find_element_by_xpath(".//a[@class='num -next']") #历史class_name（天眼查的反爬措施）：'pagination-next  ',''
                 driver.execute_script("arguments[0].click();", button)
                 ####################################################################################
@@ -236,7 +239,7 @@ class Tianyancha():
                 df2 = get_table_info(table) ## 应该可以更换不同的get_XXXX_info
          ##     df2['日期'] = table.find_elements_by_tag_name('div')[i+3].text
                 df = df.append(df2, ignore_index=True)
-         ## df = df.drop(columns=['序号'])
+            # df = df.drop(columns=['序号'])
             return df
 
         def get_table_info(table):
@@ -247,7 +250,6 @@ class Tianyancha():
             if '操作' in df.columns:
                 df = df.drop(columns='操作')
             return df
-
 
         def scrapy(driver):
             # Waiting time for volatilityNum to load
@@ -274,22 +276,23 @@ class Tianyancha():
                 #########
                 # 排除列表：不同业务可以设置不同分类，实现信息的精准爬取
                 #########
+                # TODO:允许用户自主选择保留项目
                 elif name[x] in ['recruit', 'tmInfo', 'holdingCompany', 'bonus', 'invest', 'firmProduct', 'jingpin', \
                                  'bid', 'taxcredit', 'certificate', 'patent', 'copyright', 'product', 'importAndExport', \
                                  'copyrightWorks', 'wechat', 'websiteRecords', 'announcementcourt', 'lawsuit', 'court', \
                                  'branch', 'touzi', 'judicialSale', 'bond', 'teamMember', 'check','recruit']:
                     pass
 
-    #             # 公司高管的特殊处理
-    #             elif name[x] == 'staff':
-    #                 table_dict[name[x]] = get_staff_info(driver)
+                # # 公司高管的特殊处理
+                # elif name[x] == 'staff':
+                #     table_dict[name[x]] = get_staff_info(driver)
 
                 # 公告的特殊处理：加入URL
                 elif name[x] == 'announcement':
                     table_dict[name[x]] = get_announcement_info(driver)
 
                 #  单纯的表格进行信息爬取
-                ## 含头像的行未对齐
+                # TODO: 含头像的行未对齐
                 elif len(num) == 1:
 
                     print (name[x]) ##检查用
@@ -299,9 +302,9 @@ class Tianyancha():
                     ontapflag = tryontap(tables[x])
                     # 判断此表格是否有翻页功能
                     if onclickflag == 1:
-                        df = change_page(tables[x], df)
-                ##  if ontapflag == 1:
-                ##      df = change_tap(tables[x], df)
+                        df = change_page(tables[x], df, driver)
+                #  if ontapflag == 1:
+                #      df = change_tap(tables[x], df)
                     table_dict[name[x]] = df
 
                 else:
@@ -311,28 +314,15 @@ class Tianyancha():
             #table_dict['websiteRecords'] = get_table_info(tables[len(tables)-2])
             return table_dict
 
-
         def gen_excel(table_dict, keyword):
             with pd.ExcelWriter(keyword+'.xlsx') as writer:
                 for sheet_name in table_dict:
                     table_dict[sheet_name].to_excel(writer, sheet_name=sheet_name, index=None)
 
-        # # 微信通知提醒进度：已进行到'131. XXXX; 35%',声明序号/名称/完成度;发送给自己
-        # def notification_wechat():
-        #     pass
-
         # 主程序
-        url1 = 'http://www.tianyancha.com/search?key=%s&checkFrom=searchBox' % keyword ## 是否要移到最前面定义？
-
-        self.driver = search_company(self.driver, url1)
+        url_search = 'http://www.tianyancha.com/search?key=%s&checkFrom=searchBox' % keyword
+        self.driver = search_company(self.driver, url_search)
         table_dict = scrapy(self.driver)
         gen_excel(table_dict, keyword)
-        # notification_wechat()
-        return table_dict
-        # # 个性操作
-        # os.makedirs(path+'/'+'clients'+'/'+ str(i+1) + '. ' + keyword + ' ' + keyword_list_name[i].replace(' ',''))
-        # shutil.move(path+'/'+keyword+'.xlsx',path+'/'+'clients'+'/'+ str(i+1) + '. ' + keyword + ' ' + keyword_list_name[i].replace(' ','') +'/'+keyword + ' ' + keyword_list_name[i].replace(' ','') + '.xlsx')
 
-if __name__ == '__main__':
-    table_dict = Tianyancha(username='13488895246', password='abcd1234').tianyancha_scraper(keyword='北京鸿智慧通实业有限公司')
-    print (table_dict)
+        return table_dict
