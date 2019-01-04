@@ -9,12 +9,12 @@
 3. Requirement.txt
 
 ## 使用方法
-**下载仓库到本地后**，运行.py文件：
+输入更换为自己的天眼查账户、密码和查询关键字。
+    
+    from Tianyancha import tianyancha
+    table_dict = Tianyancha(username='User', password='Password').tianyancha_scraper(keyword='Keyword')
 
-![demo](https://user-images.githubusercontent.com/10396208/40413412-5875fa46-5ea8-11e8-975a-546290cb746c.gif)
-
-1. 使用命令行工具执行`tianyancha.py`
-3. 程序开始运行，对分类信息开始依次爬取，输出结果范例为`000810 创维数字.xlsx`
+<!--- ![demo](https://user-images.githubusercontent.com/10396208/40413412-5875fa46-5ea8-11e8-975a-546290cb746c.gif) -->
 
 ## 捐助 Donation
 <img src="https://user-images.githubusercontent.com/10396208/49501270-6dcd4580-f8ad-11e8-89c9-ff30922df917.jpg" width="300" height="300" />
