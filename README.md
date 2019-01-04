@@ -2,7 +2,7 @@
 天眼查企业工商信息下载工具，一行代码将目标企业的工商信息分门别类地保存为Excel文件。
 
 ## 使用方法
-输入更换为自己的天眼查账户、密码和查询关键字。生成的Excel文件请参考`创维.xlsx`。
+输入更换为自己的天眼查账户、密码和查询关键字。生成的Excel文件请参考`000810 创维数字.xlsx`。
     
     from tianyancha import Tianyancha
     table_dict = Tianyancha(username='User', password='Password').tianyancha_scraper(keyword='Keyword')
