@@ -20,6 +20,7 @@
 3. `Requirements.txt`
 
 ## 捐助 Donation
+捐助是一种美德。:kissing_heart:
 
 <img src="https://user-images.githubusercontent.com/10396208/49501270-6dcd4580-f8ad-11e8-89c9-ff30922df917.jpg" width="300" height="300" />
 <!--- Alipay
