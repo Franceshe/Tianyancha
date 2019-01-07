@@ -17,9 +17,10 @@
 2. Chrome-webdriver：将`chromedriver.exe`(Windows)或`chromedriver.dmg`(Mac)移动到本地Python安装目录下。
     1. [百度网盘下载](https://pan.baidu.com/s/1zMSlbRtL6RHhJdp0NL0bcg)
     2. [官方下载](https://sites.google.com/a/chromium.org/chromedriver/downloads)(需要代理访问)
-3. Requirement.txt
+3. `Requirements.txt`
 
 ## 捐助 Donation
+
 <img src="https://user-images.githubusercontent.com/10396208/49501270-6dcd4580-f8ad-11e8-89c9-ff30922df917.jpg" width="300" height="300" />
 <!--- Alipay
 <img src="https://user-images.githubusercontent.com/10396208/49501461-e03e2580-f8ad-11e8-8c21-3cb9b71cb18a.jpg" width="300" />
