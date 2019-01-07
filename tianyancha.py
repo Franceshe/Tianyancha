@@ -74,14 +74,14 @@ class Tianyancha():
     def tianyancha_scraper(self,
                            keyword,
                            table='all',
-                           use_list_exception=True,
+                           use_default_exception=True,
                            change_page_interval=2,
                            export='xlsx'):
         """
         天眼查爬虫主程序。
         :param keyword: 公司名称，支持模糊或部分检索。比如"北京鸿智慧通实业有限公司"。
         :param table: 需要爬取的表格信息，默认为全部爬取。和官方的元素名称一致。常见的可以是'baseInfo', 'staff', 'invest'等，具体请参考表格名称中英文对照表。
-        :param use_list_exception: 是否使用默认的排除列表，以忽略低价值表格为代价来加快爬取速度。
+        :param use_default_exception: 是否使用默认的排除列表，以忽略低价值表格为代价来加快爬取速度。
         :param change_page_interval: 爬取多页的时间间隔，默认2秒。避免频率过快IP地址被官方封禁。
         :param export: 输出保存格式，默认为Excel的`xlsx`格式，也支持`json`。
         :return:
@@ -264,6 +264,7 @@ class Tianyancha():
                 df = df.append(df2)
             return df
 
+        # TODO：完善change_tap函数。
         def change_tap(table, df):
             TapCount = len(table.find_elements_by_tag_name('div'))
             for i in range(int(TapCount) - 3):
@@ -276,7 +277,7 @@ class Tianyancha():
             # df = df.drop(columns=['序号'])
             return df
 
-        def scrapy(driver, table, use_list_exception):
+        def scrapy(driver, table, use_default_exception):
             # 强制确认table类型为list：当只爬取一个元素的时候很可能用户会只传入表明str
             if type(table) == str:
                 list_table = []
@@ -285,10 +286,10 @@ class Tianyancha():
 
             # 定义排除列表
             # TODO:允许用户自主选择保留项目;帮助检查没有重复项
-            if use_list_exception:
+            if use_default_exception:
                 list_exception = ['recruit', 'tmInfo', 'holdingCompany', 'invest', 'bonus', 'firmProduct', 'jingpin', \
                                   'bid', 'taxcredit', 'certificate', 'patent', 'copyright', 'product', 'importAndExport', \
-                                  'copyrightWorks', 'wechat', 'websiteRecords', 'announcementcourt', 'lawsuit', 'court', \
+                                  'copyrightWorks', 'wechat', 'icp', 'announcementcourt', 'lawsuit', 'court', \
                                   'branch', 'touzi', 'judicialSale', 'bond', 'teamMember', 'check']
                 # 两个List取差异部分，只排除不在爬取范围内的名单。参考：https://stackoverflow.com/questions/1319338/combining-two-lists-and-removing-duplicates-without-removing-duplicates-in-orig/1319353#1319353
                 list_exception = list(set(list_exception) - set(table))
@@ -363,8 +364,6 @@ class Tianyancha():
                 else:
                     pass
 
-            #table_dict['websiteRecords'] = get_table_info(tables[len(tables)-2])
-
             # 退出浏览器
             driver.quit()
 
@@ -385,7 +384,7 @@ class Tianyancha():
 
         url_search = 'http://www.tianyancha.com/search?key=%s&checkFrom=searchBox' % keyword
         self.driver = search_company(self.driver, url_search)
-        table_dict = scrapy(self.driver, table, use_list_exception)
+        table_dict = scrapy(self.driver, table, use_default_exception)
         if export == 'xlsx':
             gen_excel(table_dict, keyword)
         elif export == 'json':
