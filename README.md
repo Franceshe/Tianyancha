@@ -15,6 +15,7 @@ table_dict = Tianyancha(username='User', password='Password').tianyancha_scraper
 
 | 名称  | 参数  | 说明  |
 |---|---|---|
+| **所有表格**   | all  | 所有表格信息，非官方字段。  |
 | **工商信息** | baseInfo | 企业基础工商信息，包含统一社会信用代码/注册资本/注册日期/法定代表人/经营范围等信息  |
 | 主要人员  | staff  |   |
 | 上市公告 | announcement |  |
