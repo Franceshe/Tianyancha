@@ -253,7 +253,7 @@ class Tianyancha():
             # PageCount = re.sub("\D", "", PageCount)  # 使用正则表达式取字符串中的数字 ；\D表示非数字的意思
             PageCount = len(table.find_elements_by_xpath(".//ul[@class='pagination']/li")) - 1
 
-            for i in range(int(PageCount) - 1):
+            for _ in range(int(PageCount) - 1):
                 # TODO:抽象化：频繁变换点
                 button = table.find_element_by_xpath(".//a[@class='num -next']") #历史class_name（天眼查的反爬措施）：'pagination-next  ',''
                 driver.execute_script("arguments[0].click();", button)
@@ -279,7 +279,7 @@ class Tianyancha():
 
         def scrapy(driver, table, use_default_exception):
             # 强制确认table类型为list：当只爬取一个元素的时候很可能用户会只传入表明str
-            if type(table) == str:
+            if isinstance(table, str):
                 list_table = []
                 list_table.append(table)
                 table = list_table
@@ -310,15 +310,14 @@ class Tianyancha():
                 name[x] = tables[x].get_attribute('id')
                 name[x] = name[x].replace(c, '')  # 可以用这个名称去匹配数据库
                 # 判断是表格还是表单
-                num = tables[x].find_elements_by_tag_name('table')
+                # TODO: Deprecated if being tested not useful anymore.
+                # num = tables[x].find_elements_by_tag_name('table')
 
                 # 排除列表：不同业务可以设置不同分类，实现信息的精准爬取
                 if name[x] in list_exception:
                     pass
 
                 # 基本信息表：baseInfo，table有两个
-                # TODO:需要更好地设置baseinfo的判定条件
-                # if len(num) > 1:
                 elif (name[x] == 'baseInfo') and (('baseInfo' in table) or (table == ['all'])):
                     print ('正在爬取' + 'baseInfo')
                     try:
