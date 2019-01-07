@@ -7,7 +7,7 @@ __author__ = 'Qiao Zhang'
 
 import pandas as pd
 from bs4 import BeautifulSoup
-import requests, time, re, openpyxl, pyautogui, platform, json
+import requests, time, re, pyautogui, platform, json
 from selenium import webdriver
 
 class Tianyancha():
@@ -101,7 +101,7 @@ class Tianyancha():
                 except:
                     url2 = driver.find_element_by_xpath("//div[@class='content']/div[@class='header']/a[@class='name ']").get_attribute('href')
                 print ('登陆成功。')
-            except Exception as e:
+            except:
                 print ('登陆过于频繁，请1分钟后再次尝试。')
 
             # TODO: 如果搜索有误，手工定义URL2地址。有无改善方案？
@@ -242,7 +242,7 @@ class Tianyancha():
             try:
                 table.find_element_by_xpath("//div[contains(@class,'over-hide changeTabLine f14')]")
                 ontapflag = 1
-            except Exception:
+            except:
                 print("没有时间切换页") ## 声明表格名称: name[x] +
                 ontapflag = 0
             return ontapflag
@@ -272,7 +272,7 @@ class Tianyancha():
                 driver.execute_script("arguments[0].click();", button)
                 time.sleep(2)
                 df2 = get_table_info(table) ## 应该可以更换不同的get_XXXX_info
-         ##     df2['日期'] = table.find_elements_by_tag_name('div')[i+3].text
+                # df2['日期'] = table.find_elements_by_tag_name('div')[i+3].text
                 df = df.append(df2, ignore_index=True)
             # df = df.drop(columns=['序号'])
             return df
@@ -391,7 +391,6 @@ class Tianyancha():
             gen_json(table_dict, keyword)
         else:
             print ("请选择正确的输出格式，支持'xlsx'和'json'。")
-            pass
 
         time_end = time.time()
         print ('您的本次爬取共用时{}秒。'.format(int(time_end - time_start)))
