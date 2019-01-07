@@ -7,7 +7,7 @@ __author__ = 'Qiao Zhang'
 
 import pandas as pd
 from bs4 import BeautifulSoup
-import requests, time, re, openpyxl, psutil, pyautogui, platform
+import requests, time, re, openpyxl, pyautogui, platform, json
 from selenium import webdriver
 
 class Tianyancha():
@@ -18,13 +18,19 @@ class Tianyancha():
     def __init__(self, username, password):
         self.username = username
         self.password = password
-        self.driver = self.log_in()
+        self.driver = self.login()
 
     # 登录天眼查
-    def log_in(self):
+    def login(self):
+        time_start = time.time()
+
+        # 操作行为提示
+        print ('登录过程中请勿操作鼠标键盘！请保持优雅勿频繁（间隔小于1分钟）登录以减轻服务器负载。')
+
         # 打开浏览器
         driver = webdriver.Chrome()
         driver.get(self.url)
+        # TODO：是否要清除Cookies?
         driver.delete_all_cookies()
 
         # 模拟登陆：GUI自动化
@@ -44,30 +50,42 @@ class Tianyancha():
         # 防止用户已经将选项卡切换到了"密码登录"使得login_option.png因为下方出现蓝色小条而无法匹配，使用Try-Except提高程序稳健性
         try:
             x, y = pyautogui.locateCenterOnScreen('./src/login_option.png')
-            print (x, y)
             pyautogui.click(x, y)
         # TODO：将exception的必须性写入文章，要不然会隐藏错误
         except Exception as e:
             print (e)
 
         x, y = pyautogui.locateCenterOnScreen('./src/login_id.png')
-        print (x, y)
         pyautogui.click(x, y)
         pyautogui.typewrite(self.username)
 
         x, y = pyautogui.locateCenterOnScreen('./src/login_password.png')
-        print (x, y)
         pyautogui.click(x, y)
         pyautogui.typewrite(self.password)
 
         x, y = pyautogui.locateCenterOnScreen('./src/login_button.png')
-        print (x, y)
         pyautogui.click(x, y)
 
+        time_end = time.time()
+        print ('您的本次登录共用时{}秒。'.format(int(time_end - time_start)))
         return driver
 
     # 定义天眼查爬虫
-    def tianyancha_scraper(self, keyword,change_page_interval=2):
+    def tianyancha_scraper(self,
+                           keyword,
+                           table='all',
+                           use_list_exception=True,
+                           change_page_interval=2,
+                           export='xlsx'):
+        """
+        天眼查爬虫主程序。
+        :param keyword: 公司名称，支持模糊或部分检索。比如"北京鸿智慧通实业有限公司"。
+        :param table: 需要爬取的表格信息，默认为全部爬取。和官方的元素名称一致。常见的可以是'baseInfo', 'staff', 'invest'等，具体请参考表格名称中英文对照表。
+        :param use_list_exception: 是否使用默认的排除列表，以忽略低价值表格为代价来加快爬取速度。
+        :param change_page_interval: 爬取多页的时间间隔，默认2秒。避免频率过快IP地址被官方封禁。
+        :param export: 输出保存格式，默认为Excel的`xlsx`格式，也支持`json`。
+        :return:
+        """
         # 公司搜索：顺带的名称检查功能，利用天眼查的模糊搜索能力
         # TODO：将借用模糊搜索的思路写进宣传文章。
         def search_company(driver, url1):
@@ -75,7 +93,17 @@ class Tianyancha():
             time.sleep(1)
             content = driver.page_source.encode('utf-8')
             soup1 = BeautifulSoup(content, 'lxml')
-            url2 = soup1.find('div',class_='header').find('a', class_="name ").attrs['href']
+            # TODO：是否要将登录状态监测统一到login函数中
+            try:
+                # TODO：'中信证券股份有限公司'无法正确检索
+                try:
+                    url2 = soup1.find('div',class_='header').find('a', class_="name ").attrs['href']
+                except:
+                    url2 = driver.find_element_by_xpath("//div[@class='content']/div[@class='header']/a[@class='name ']").get_attribute('href')
+                print ('登陆成功。')
+            except Exception as e:
+                print ('登陆过于频繁，请1分钟后再次尝试。')
+
             # TODO: 如果搜索有误，手工定义URL2地址。有无改善方案？
             driver.get(url2)
             return driver
@@ -100,7 +128,7 @@ class Tianyancha():
                 abstract = driver.find_element_by_xpath("//div[@class='summary']")
                 base_table['简介'] = driver.execute_script("return arguments[0].textContent", abstract).strip()[3:]
 
-            tabs = driver.find_elements_by_tag_name('table')
+            tabs = driver.find_elements_by_xpath("//div[@id='_container_baseInfo']/table")
             rows1 = tabs[0].find_elements_by_tag_name('tr')
 
             if len(rows1[1].find_elements_by_tag_name('td')[0].text.split('\n')[0]) < 2:
@@ -108,9 +136,9 @@ class Tianyancha():
             else:
                 base_table['法人代表'] = rows1[1].find_elements_by_tag_name('td')[0].text.split('\n')[0]
 
-            ## 注册资本显示不对，需要使用转码函数：可以参考GitHub另一个人的解法
+            # TODO：注册资本显示不对，需要使用转码函数：可以参考GitHub另一个人的解法
             base_table['注册资本'] = rows1[1].find_elements_by_tag_name('td')[1].text.split('\n')[1]
-            ## 公司状态尚未爬取
+            # TODO：公司状态尚未爬取
             base_table['公司状态'] = ''#rows1[1].find_elements_by_tag_name('td')[1].text.split('\n')[5]
 
             rows2 = tabs[1].find_elements_by_tag_name('tr')
@@ -151,9 +179,9 @@ class Tianyancha():
         # TODO:加入类别搜索功能
         def get_announcement_info(driver):
             announcement_df = pd.DataFrame(columns=['序号','日期','上市公告','上市公告网页链接']) ## 子函数自动获取columns
-            ### 函数化
+            # TODO:可抽象，函数化
             content = driver.page_source.encode('utf-8')
-            ## 能不能只Encode局部的driver
+            # TODO：能不能只Encode局部的driver
             soup = BeautifulSoup(content, 'lxml')
             announcement_info = soup.find('div',id='_container_announcement').find('tbody').find_all('tr')
             for i in range(len(announcement_info)):
@@ -162,7 +190,6 @@ class Tianyancha():
                 announcement = announcement_info[i].find_all('td')[2].get_text()
                 announcement_url = 'https://www.tianyancha.com' + announcement_info[i].find_all('td')[2].find('a')['href']
                 announcement_df = announcement_df.append({'序号':index,'日期':date,'上市公告':announcement,'上市公告网页链接':announcement_url}, ignore_index=True)
-            ###
 
             ### 判断此表格是否有翻页功能:重新封装change_page函数
             announcement_table = driver.find_element_by_xpath("//div[contains(@id,'_container_announcement')]")
@@ -173,13 +200,10 @@ class Tianyancha():
                 for i in range(int(PageCount) - 1):
                     button = table.find_element_by_xpath(".//a[@class='num -next']") #历史class_name（天眼查的反爬措施）：'pagination-next  ',''
                     driver.execute_script("arguments[0].click();", button)
-                    ####################################################################################
                     time.sleep(change_page_interval)
-                    ####################################################################################
-            ###
-                    ### 函数化
+                    # TODO：函数化
                     content = driver.page_source.encode('utf-8')
-                    ## 能不能只Encode局部的driver
+                    # TODO：能不能只Encode局部的driver
                     soup = BeautifulSoup(content, 'lxml')
                     announcement_info = soup.find('div',id='_container_announcement').find('tbody').find_all('tr')
                     for i in range(len(announcement_info)):
@@ -188,8 +212,18 @@ class Tianyancha():
                         announcement = announcement_info[i].find_all('td')[2].get_text()
                         announcement_url = 'https://www.tianyancha.com' + announcement_info[i].find_all('td')[2].find('a')['href']
                         announcement_df = announcement_df.append({'序号':index,'日期':date,'上市公告':announcement,'上市公告网页链接':announcement_url}, ignore_index=True)
-                    ###
             return announcement_df
+
+        # 标准表格爬取函数
+        def get_table_info(table):
+            tab = table.find_element_by_tag_name('table')
+            df = pd.read_html('<table>' + tab.get_attribute('innerHTML') + '</table>')
+            if isinstance(df, list):
+                df = df[0]
+            if '操作' in df.columns:
+                df = df.drop(columns='操作')
+            # TODO：加入更多标准的表格处理条件
+            return df
 
         def tryonclick(table): # table实质上是selenium WebElement
             # 测试是否有翻页
@@ -242,19 +276,27 @@ class Tianyancha():
             # df = df.drop(columns=['序号'])
             return df
 
-        def get_table_info(table):
-            tab = table.find_element_by_tag_name('table')
-            df = pd.read_html('<table>' + tab.get_attribute('innerHTML') + '</table>')
-            if isinstance(df, list):
-                df = df[0]
-            if '操作' in df.columns:
-                df = df.drop(columns='操作')
-            return df
+        def scrapy(driver, table, use_list_exception):
+            # 强制确认table类型为list：当只爬取一个元素的时候很可能用户会只传入表明str
+            if type(table) == str:
+                list_table = []
+                list_table.append(table)
+                table = list_table
 
-        def scrapy(driver):
+            # 定义排除列表
+            # TODO:允许用户自主选择保留项目;帮助检查没有重复项
+            if use_list_exception:
+                list_exception = ['recruit', 'tmInfo', 'holdingCompany', 'invest', 'bonus', 'firmProduct', 'jingpin', \
+                                  'bid', 'taxcredit', 'certificate', 'patent', 'copyright', 'product', 'importAndExport', \
+                                  'copyrightWorks', 'wechat', 'websiteRecords', 'announcementcourt', 'lawsuit', 'court', \
+                                  'branch', 'touzi', 'judicialSale', 'bond', 'teamMember', 'check']
+                # 两个List取差异部分，只排除不在爬取范围内的名单。参考：https://stackoverflow.com/questions/1319338/combining-two-lists-and-removing-duplicates-without-removing-duplicates-in-orig/1319353#1319353
+                list_exception = list(set(list_exception) - set(table))
+            else:
+                list_exception = []
+
             # Waiting time for volatilityNum to load
             time.sleep(2)
-
             tables = driver.find_elements_by_xpath("//div[contains(@id,'_container_')]")
 
             # 获取每个表格的名字
@@ -269,33 +311,39 @@ class Tianyancha():
                 # 判断是表格还是表单
                 num = tables[x].find_elements_by_tag_name('table')
 
-                # 基本信息表：table有两个
-                if len(num) > 1: ##需要更好地设置baseinfo的判定条件
-                    table_dict[name[x]] = get_base_info(driver)
-
-                #########
                 # 排除列表：不同业务可以设置不同分类，实现信息的精准爬取
-                #########
-                # TODO:允许用户自主选择保留项目
-                elif name[x] in ['recruit', 'tmInfo', 'holdingCompany', 'bonus', 'invest', 'firmProduct', 'jingpin', \
-                                 'bid', 'taxcredit', 'certificate', 'patent', 'copyright', 'product', 'importAndExport', \
-                                 'copyrightWorks', 'wechat', 'websiteRecords', 'announcementcourt', 'lawsuit', 'court', \
-                                 'branch', 'touzi', 'judicialSale', 'bond', 'teamMember', 'check','recruit']:
+                if name[x] in list_exception:
                     pass
+
+                # 基本信息表：baseInfo，table有两个
+                # TODO:需要更好地设置baseinfo的判定条件
+                # if len(num) > 1:
+                elif (name[x] == 'baseInfo') and (('baseInfo' in table) or (table == ['all'])):
+                    print ('正在爬取' + 'baseInfo')
+                    try:
+                        table_dict[name[x]] = get_base_info(driver)
+                    except:
+                        print ('baseInfo表格为特殊格式，使用了标准表格爬取函数。')
+                        table_dict[name[x]] = get_base_info(driver)
 
                 # # 公司高管的特殊处理
                 # elif name[x] == 'staff':
                 #     table_dict[name[x]] = get_staff_info(driver)
 
                 # 公告的特殊处理：加入URL
-                elif name[x] == 'announcement':
-                    table_dict[name[x]] = get_announcement_info(driver)
+                elif (name[x] == 'announcement') and (('announcement' in table) or (table == ['all'])):
+                    print ('正在爬取' + 'announcement')
+                    try:
+                        table_dict[name[x]] = get_announcement_info(driver)
+                    except:
+                        print ('announcement表格为特殊格式，使用了标准表格爬取函数。')
+                        table_dict[name[x]] = get_base_info(driver)
 
-                #  单纯的表格进行信息爬取
+                # 单纯的表格进行信息爬取
                 # TODO: 含头像的行未对齐
-                elif len(num) == 1:
-
-                    print (name[x]) ##检查用
+                elif ((name[x] in table) or (table == ['all'])):
+                    # 检查用
+                    print ('正在爬取' + str(name[x]))
 
                     df = get_table_info(tables[x])
                     onclickflag = tryonclick(tables[x])
@@ -307,11 +355,19 @@ class Tianyancha():
                 #      df = change_tap(tables[x], df)
                     table_dict[name[x]] = df
 
-                else:
+                # 新检测表格
+                elif (name[x] in table) or (table == ['all']):
                     table_dict[name[x]] = pd.DataFrame()
-                    print (name[x]+'为奇怪表格，请检查程序！')
+                    print (str(name[x])+'为新检测到的表格，可能是程序Bug或官方新增，请完善程序！')
+
+                else:
+                    pass
 
             #table_dict['websiteRecords'] = get_table_info(tables[len(tables)-2])
+
+            # 退出浏览器
+            driver.quit()
+
             return table_dict
 
         def gen_excel(table_dict, keyword):
@@ -319,10 +375,26 @@ class Tianyancha():
                 for sheet_name in table_dict:
                     table_dict[sheet_name].to_excel(writer, sheet_name=sheet_name, index=None)
 
+        def gen_json(table_dict, keyword):
+            with open(keyword+'.json', 'w') as fp:
+                for sheet_name in table_dict:
+                    json.dump(table_dict[sheet_name].to_dict(), fp, ensure_ascii=False)
+
         # 主程序
+        time_start = time.time()
+
         url_search = 'http://www.tianyancha.com/search?key=%s&checkFrom=searchBox' % keyword
         self.driver = search_company(self.driver, url_search)
-        table_dict = scrapy(self.driver)
-        gen_excel(table_dict, keyword)
+        table_dict = scrapy(self.driver, table, use_list_exception)
+        if export == 'xlsx':
+            gen_excel(table_dict, keyword)
+        elif export == 'json':
+            gen_json(table_dict, keyword)
+        else:
+            print ("请选择正确的输出格式，支持'xlsx'和'json'。")
+            pass
+
+        time_end = time.time()
+        print ('您的本次爬取共用时{}秒。'.format(int(time_end - time_start)))
 
         return table_dict
