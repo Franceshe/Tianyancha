@@ -3,15 +3,19 @@
 
 ## 使用方法 Instruction
 **输入更换为自己的天眼查账户、密码和查询关键字。** 生成的结果文件请参考`北京鸿智慧通实业有限公司.xlsx`和`北京鸿智慧通实业有限公司.json`。
+
+运行下面的示例代码将执行：“用户User输入密码Password登录后，爬取关键字为Keyword的企业的工商信息(baseInfo)，结果保存为JSON文件。”
 ```python
 from tianyancha import Tianyancha
 table_dict = Tianyancha(username='User', password='Password').tianyancha_scraper(keyword='Keyword', table='baseInfo', export='json')
 ```
 
-<!--- ![demo](https://user-images.githubusercontent.com/10396208/40413412-5875fa46-5ea8-11e8-975a-546290cb746c.gif) -->
+### 参数使用范例 Parameter Sample Usage
+tianyancha_scraper(table):
+1. 单个表格：`table='baseInfo'`或者`table=['baseInfo']`
+2. 多个表格：`table=['baseInfo', 'invest']`
 
 ### 表格名称对照表 Table Parameters Matching Chart
-本列表可能不全，欢迎补充。
 
 | 名称  | 参数  | 说明  |
 |---|---|---|
