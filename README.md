@@ -1,14 +1,9 @@
 # Tianyancha
 输入目标企业的模糊名称/简称，一行代码将目标企业的工商信息分类保存为Excel/JSON文件。
 
-## 设计思想 Design
-### 模拟登录
-
-基于PyAutoGUI的GUI自动化方式来定位登录框并传入个人账户信息。绕开了官方对Selenium定位元素和Cookies仅能首次成功登陆的限制。GUI自动化方式同比稍慢，一次登录大概25秒。
-
-### 数据爬取
-1. 关键字的模糊识别：利用天眼查搜索框的已有模糊检索能力，方便用户仅能提供部分关键字的情况。
-2. 元素定位：特殊表格（比如'baseInfo'）使用了Selenium提供的API，具体请参考[Locating Elements](https://selenium-python.readthedocs.io/locating-elements.html)。一般表格使用pandas的[read_html](https://pandas.pydata.org/pandas-docs/stable/generated/pandas.read_html.html)方法。
+* **模拟登录**：基于PyAutoGUI的GUI自动化方式来定位登录框并传入个人账户信息。绕开了官方对Selenium定位元素和Cookies仅能首次成功登陆的限制。GUI自动化方式同比稍慢，一次登录大概25秒。
+* **关键字的模糊识别**：利用天眼查搜索框的已有模糊检索能力，方便用户仅能提供部分关键字的情况。
+* **元素定位**：特殊表格（比如'baseInfo'）使用了Selenium提供的API，具体请参考[Locating Elements](https://selenium-python.readthedocs.io/locating-elements.html)。一般表格使用pandas的[read_html](https://pandas.pydata.org/pandas-docs/stable/generated/pandas.read_html.html)方法。
 
 ## 使用方法 Instruction
 **输入更换为自己的天眼查账户、密码和查询关键字。** 生成的结果文件请参考`北京鸿智慧通实业有限公司.xlsx`和`北京鸿智慧通实业有限公司.json`。
@@ -63,7 +58,7 @@ Tianyancha.**tianyancha_scraper**(keyword, table='all', use_default_exception=Tr
 | 法律诉讼  | lawsuit  |   |
 | 法院公告  | court  |   |
 | 投资事件  | touzi  |   |
-| 名称  | judicialSale  |   |
+| 司法拍卖  | judicialSale  |   |
 | 债券信息  | bond  |   |
 | 核心团队  | teamMember  |   |
 | 抽查检查  | check  |   |
