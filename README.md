@@ -10,10 +10,16 @@ from tianyancha import Tianyancha
 table_dict = Tianyancha(username='User', password='Password').tianyancha_scraper(keyword='Keyword', table='baseInfo', export='json')
 ```
 
-### 参数使用范例 Parameter Sample Usage
-tianyancha_scraper(table):
-1. 单个表格：`table='baseInfo'`或者`table=['baseInfo']`
-2. 多个表格：`table=['baseInfo', 'invest']`
+### 函数参数 Function Parameters
+Tianyancha.**tianyancha_scraper**(keyword, table='all', use_default_exception=True, change_page_interval=2, export='xlsx'):
+
+| 参数  | 类型 | 说明  | 范例 |
+|---|---| --- | --- |
+| keyword| string; | 公司名称，支持模糊或部分检索。| "北京鸿智慧通实业有限公司" |
+| table  | list or string, default 'all' | 需要爬取的表格信息。和官方的元素名称一致，具体请参考表格名称中英文对照表。 | ['baseInfo', 'staff', 'invest'] |
+| use_default_exception | boolean, default True | 是否使用默认的排除列表，以忽略低价值表格为代价来加快爬取速度。| False|
+| change_page_interval| float, default 2 | 爬取多页的时间间隔(秒)。避免频率过快IP地址被官方封禁。| 1.5 |
+| export | string, default 'xlsx' | 输出保存格式，'xlsx'/'json'。 | 'json'|
 
 ### 表格名称对照表 Table Parameters Matching Chart
 
