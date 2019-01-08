@@ -355,11 +355,6 @@ class Tianyancha():
                 #      df = change_tap(tables[x], df)
                     table_dict[name[x]] = df
 
-                # 新检测表格
-                elif (name[x] in table) or (table == ['all']):
-                    table_dict[name[x]] = pd.DataFrame()
-                    print (str(name[x])+'为新检测到的表格，可能是程序Bug或官方新增，请完善程序！')
-
                 else:
                     pass
 
