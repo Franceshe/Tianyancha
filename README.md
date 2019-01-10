@@ -25,7 +25,7 @@ Tianyancha.**tianyancha_scraper**(keyword, table='all', use_default_exception=Tr
 | change_page_interval| float, default 2 | 爬取多页的时间间隔(秒)。避免频率过快IP地址被官方封禁。| 1.5 |
 | export | string, default 'xlsx' | 输出保存格式，'xlsx'/'json'。 | 'json'|
 
-### 表格名称对照表 Table Parameters Matching Chart
+### 表格名称对照表 Table Parameters Mapping Chart
 
 | 名称  | 参数  | 说明  |
 |---|---|---|
