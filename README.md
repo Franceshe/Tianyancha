@@ -26,7 +26,7 @@ Tianyancha.**tianyancha_scraper**(keyword, table='all', use_default_exception=Tr
 | export | string, default 'xlsx' | 输出保存格式，'xlsx'/'json'。 | 'json'|
 
 
-### 表格名称中英对照表   Table Parameters Mapping Chart
+### 表格参数对照表   Table Parameters Mapping Chart
 
 
 <table><tbody>
