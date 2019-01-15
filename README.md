@@ -78,7 +78,7 @@ Tianyancha.**tianyancha_scraper**(keyword, table='all', use_default_exception=Tr
    <tr>
     <th rowspan="11">上市信息 Listed information</th>
     <td>股票行情</td>
-    <td>Stock Quotes</td>
+    <td>volatilityNum</td>
     <td ></td>
    </tr>
    <tr>
@@ -98,7 +98,7 @@ Tianyancha.**tianyancha_scraper**(keyword, table='all', use_default_exception=Tr
    </tr>
    <tr  >
     <td >上市公告</td>
-    <td >Listing Announcement</td>
+    <td >announcement</td>
     <td ></td>
    </tr>
    <tr>
