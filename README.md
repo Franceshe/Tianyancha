@@ -344,7 +344,7 @@ Tianyancha.**tianyancha_scraper**(keyword, table='all', use_default_exception=Tr
    </tr>
    <tr  >
     <td >电信许可</td>
-    <td ></td>
+    <td >permission</td>
     <td ></td>
    </tr>
    <tr >
@@ -380,22 +380,22 @@ Tianyancha.**tianyancha_scraper**(keyword, table='all', use_default_exception=Tr
    </tr>
    <tr >
     <td >工商信息</td>
-    <td >pastICCount</td>
+    <td >baseInfo</td>
     <td ></td>
    </tr>
    <tr >
     <td >股东信息</td>
-    <td >pastHolderCount</td>
+    <td >holder</td>
     <td ></td>
    </tr>
    <tr >
     <td >对外投资</td>
-    <td >pastInvestCount</td>
+    <td >invest</td>
     <td ></td>
    </tr>
    <tr >
     <td >开庭公告</td>
-    <td >pastAnnouncementCount</td>
+    <td >announcementcourt</td>
     <td ></td>
    </tr>
    <tr >
