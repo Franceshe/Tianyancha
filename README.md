@@ -8,7 +8,7 @@
 ## 使用方法 Instruction
 **输入更换为自己的天眼查账户、密码和查询关键字。** 生成的结果文件请参考`北京鸿智慧通实业有限公司.xlsx`和`中信证券股份有限公司.json`。
 
-运行下面的示例代码将执行：“用户User输入密码Password登录后，爬取关键字为Keyword的企业的工商信息(baseInfo)，结果保存为JSON文件。”
+运行下面的示例代码将执行：“用户User输入密码Password登录后，爬取关键字为Keyword的企业的工商信息(baseInfo)，结果返回table_dict并保存为JSON文件。”
 ```python
 from tianyancha import Tianyancha
 table_dict = Tianyancha(username='User', password='Password').tianyancha_scraper(keyword='Keyword', table='baseInfo', export='json')
