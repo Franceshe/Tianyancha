@@ -64,7 +64,7 @@ Tianyancha.**tianyancha_scraper**(keyword, table='all', use_default_exception=Tr
 | 抽查检查  | check  |   ||
 
 
-### 表格名称中英对照表   Table Parameters Chinese-English Mapping Chart
+### 表格名称中英对照表   Table Parameters Mapping Chart
 
 
 <table><tbody>
