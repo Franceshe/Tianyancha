@@ -1,12 +1,12 @@
 # Tianyancha
-输入目标企业的模糊名称/简称，一行代码将目标企业的工商信息分类保存为Excel/JSON文件。
+输入目标企业的模糊名称/简称，一行代码将目标企业的制定工商信息分类保存为Excel/JSON文件。
 
-* **模拟登录**：基于PyAutoGUI的GUI自动化方式来定位登录框并传入个人账户信息。绕开了官方对Selenium定位元素和Cookies仅能首次成功登陆的限制。GUI自动化方式同比稍慢，一次登录大概25秒。
+* **模拟登录**：基于Selenium的Xpath来定位登录框并传入个人账户信息,一次登录大概6-9秒。
 * **关键字的模糊识别**：利用天眼查搜索框的已有模糊检索能力，方便用户仅能提供部分关键字的情况。
 * **元素定位**：特殊表格（比如'baseInfo'）使用了Selenium提供的API，具体请参考[Locating Elements](https://selenium-python.readthedocs.io/locating-elements.html)。一般表格使用pandas的[read_html](https://pandas.pydata.org/pandas-docs/stable/generated/pandas.read_html.html)方法。
 
 ## 使用方法 Instruction
-**输入更换为自己的天眼查账户、密码和查询关键字。** 生成的结果文件请参考`北京鸿智慧通实业有限公司.xlsx`和`北京鸿智慧通实业有限公司.json`。
+**输入更换为自己的天眼查账户、密码和查询关键字。** 生成的结果文件请参考`北京鸿智慧通实业有限公司.xlsx`和`中信证券股份有限公司.json`。
 
 运行下面的示例代码将执行：“用户User输入密码Password登录后，爬取关键字为Keyword的企业的工商信息(baseInfo)，结果保存为JSON文件。”
 ```python

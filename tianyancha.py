@@ -1,23 +1,29 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-'Tianyancha: A scraper of Tianyancha, the best Chinese Business Database.'
+"""Tianyancha: A scraper of Tianyancha, the best Chinese Business Database."""
 
 __author__ = 'Qiao Zhang'
 
+import time
+import re
 import pandas as pd
 from bs4 import BeautifulSoup
-import requests, time, re, pyautogui, platform, json
 from selenium import webdriver
+from collections import OrderedDict
 
-class Tianyancha():
+from utils import WriterJson
+
+
+class Tianyancha:
 
     # 常量定义
     url = 'https://www.tianyancha.com/login'
 
-    def __init__(self, username, password):
+    def __init__(self, username, password, headless=False):
         self.username = username
         self.password = password
+        self.headless = headless
         self.driver = self.login()
 
     # 登录天眼查
@@ -27,47 +33,25 @@ class Tianyancha():
         # 操作行为提示
         print ('登录过程中请勿操作鼠标键盘！请保持优雅勿频繁（间隔小于1分钟）登录以减轻服务器负载。')
 
-        # 打开浏览器
-        driver = webdriver.Chrome()
-        driver.get(self.url)
-        # TODO：是否要清除Cookies?
-        driver.delete_all_cookies()
-
-        # 模拟登陆：GUI自动化
-        # 最大化窗口以方便准确定位
-        # TODO：将跨系统识别写进文章，作为human-centered design的例子
-        if platform.system() == 'Windows':
-            pyautogui.hotkey('alt', 'space')
-            time.sleep(0.1)
-            pyautogui.press('x')
-        elif platform.system() == 'Darwin':
-            pyautogui.hotkey('ctrl', 'command', 'f')
+        # 设置是否为隐藏加载并打开浏览器
+        if self.headless:
+            option = webdriver.ChromeOptions()
+            option.add_argument('headless')
+            driver = webdriver.Chrome(chrome_options=option)
         else:
-            # TODO:Linux系统最大化的快捷键super+up arrow key的植入
-            print ('暂时无法将Linux系统窗口最大化，请在5秒休眠期内手动将窗口最大化以保证后续流程顺利。')
-            time.sleep(5)
+            driver = webdriver.Chrome()
 
-        # 防止用户已经将选项卡切换到了"密码登录"使得login_option.png因为下方出现蓝色小条而无法匹配，使用Try-Except提高程序稳健性
-        try:
-            x, y = pyautogui.locateCenterOnScreen('./src/login_option.png')
-            pyautogui.click(x, y)
-        # TODO：将exception的必须性写入文章，要不然会隐藏错误
-        except Exception as e:
-            print (e)
+        driver.get(self.url)
 
-        x, y = pyautogui.locateCenterOnScreen('./src/login_id.png')
-        pyautogui.click(x, y)
-        pyautogui.typewrite(self.username)
-
-        x, y = pyautogui.locateCenterOnScreen('./src/login_password.png')
-        pyautogui.click(x, y)
-        pyautogui.typewrite(self.password)
-
-        x, y = pyautogui.locateCenterOnScreen('./src/login_button.png')
-        pyautogui.click(x, y)
+        # 模拟登陆：Selenium Locating Elements by Xpath
+        time.sleep(1)
+        driver.find_element_by_xpath("//div[@tyc-event-ch='Login.PasswordLogin']").click()
+        driver.find_elements_by_xpath("//input[@placeholder='请输入手机号码']")[-2].send_keys(self.username)
+        driver.find_element_by_xpath("//input[@placeholder='请输入密码']").send_keys(self.password)
+        driver.find_element_by_xpath("//div[@tyc-event-ch='Login.PasswordLogin.Login']").click()
 
         time_end = time.time()
-        print ('您的本次登录共用时{}秒。'.format(int(time_end - time_start)))
+        print('您的本次登录共用时{}秒。'.format(int(time_end - time_start)))
         return driver
 
     # 定义天眼查爬虫
@@ -86,6 +70,7 @@ class Tianyancha():
         :param export: 输出保存格式，默认为Excel的`xlsx`格式，也支持`json`。
         :return:
         """
+
         # 公司搜索：顺带的名称检查功能，利用天眼查的模糊搜索能力
         # TODO：将借用模糊搜索的思路写进宣传文章。
         def search_company(driver, url1):
@@ -100,9 +85,9 @@ class Tianyancha():
                     url2 = soup1.find('div',class_='header').find('a', class_="name ").attrs['href']
                 except:
                     url2 = driver.find_element_by_xpath("//div[@class='content']/div[@class='header']/a[@class='name ']").get_attribute('href')
-                print ('登陆成功。')
+                print('登陆成功。')
             except:
-                print ('登陆过于频繁，请1分钟后再次尝试。')
+                print('登陆过于频繁，请1分钟后再次尝试。')
 
             # TODO: 如果搜索有误，手工定义URL2地址。有无改善方案？
             driver.get(url2)
@@ -155,7 +140,7 @@ class Tianyancha():
                 for i in range(int(len(base_table_2)/2)):
                     base_table[base_table_2.iloc[2*i,1]] = base_table_2.iloc[2*i+1,1] # 将base_table_2的数据装回base_table
             else:
-                print ('base_table_2（公司基本信表2）行数不为偶数，请检查代码！')
+                print('base_table_2（公司基本信表2）行数不为偶数，请检查代码！')
 
             # 利用营业期限未加密编码修正注册时间和核准日期
             base_table['注册时间'] = base_table['营业期限'].split('至')[0]#rows1[1].find_elements_by_tag_name('td')[1].text.split('\n')[3] ##直接截取营业期限的起始日
@@ -319,11 +304,11 @@ class Tianyancha():
 
                 # 基本信息表：baseInfo，table有两个
                 elif (name[x] == 'baseInfo') and (('baseInfo' in table) or (table == ['all'])):
-                    print ('正在爬取' + 'baseInfo')
+                    print('正在爬取' + 'baseInfo')
                     try:
                         table_dict[name[x]] = get_base_info(driver)
                     except:
-                        print ('baseInfo表格为特殊格式，使用了标准表格爬取函数。')
+                        print('baseInfo表格为特殊格式，使用了标准表格爬取函数。')
                         table_dict[name[x]] = get_base_info(driver)
 
                 # # 公司高管的特殊处理
@@ -336,14 +321,14 @@ class Tianyancha():
                     try:
                         table_dict[name[x]] = get_announcement_info(driver)
                     except:
-                        print ('announcement表格为特殊格式，使用了标准表格爬取函数。')
+                        print('announcement表格为特殊格式，使用了标准表格爬取函数。')
                         table_dict[name[x]] = get_base_info(driver)
 
                 # 单纯的表格进行信息爬取
                 # TODO: 含头像的行未对齐
                 elif ((name[x] in table) or (table == ['all'])):
                     # 检查用
-                    print ('正在爬取' + str(name[x]))
+                    print('正在爬取' + str(name[x]))
 
                     df = get_table_info(tables[x])
                     onclickflag = tryonclick(tables[x])
@@ -369,9 +354,12 @@ class Tianyancha():
                     table_dict[sheet_name].to_excel(writer, sheet_name=sheet_name, index=None)
 
         def gen_json(table_dict, keyword):
-            with open(keyword+'.json', 'w') as fp:
-                for sheet_name in table_dict:
-                    json.dump(table_dict[sheet_name].to_dict(), fp, ensure_ascii=False)
+            list_dic = []
+            for i in list(table_dict.keys()):
+                list_dic.append((i, table_dict[i]))
+            dic = OrderedDict(list_dic)
+            list_json = WriterJson().odict_to_json(dic)
+            WriterJson().write_json(json_list=list_json, file_name=keyword+'.json')
 
         # 主程序
         time_start = time.time()
@@ -384,9 +372,9 @@ class Tianyancha():
         elif export == 'json':
             gen_json(table_dict, keyword)
         else:
-            print ("请选择正确的输出格式，支持'xlsx'和'json'。")
+            print("请选择正确的输出格式，支持'xlsx'和'json'。")
 
         time_end = time.time()
-        print ('您的本次爬取共用时{}秒。'.format(int(time_end - time_start)))
+        print('您的本次爬取共用时{}秒。'.format(int(time_end - time_start)))
 
         return table_dict
