@@ -25,44 +25,6 @@ Tianyancha.**tianyancha_scraper**(keyword, table='all', use_default_exception=Tr
 | change_page_interval| float, default 2 | 爬取多页的时间间隔(秒)。避免频率过快IP地址被官方封禁。| 1.5 |
 | export | string, default 'xlsx' | 输出保存格式，'xlsx'/'json'。 | 'json'|
 
-### 表格名称对照表 Table Parameters Mapping Chart
-
-| 名称  | 参数  | 说明  |
-|---|---|---|
-| **所有表格**   | all  | 所有表格信息，非官方字段。  |
-| **工商信息** | baseInfo | 企业基础工商信息，包含统一社会信用代码/注册资本/注册日期/法定代表人/经营范围等信息  |
-| 主要人员  | staff  |   |
-| 上市公告 | announcement |  |
-| 招聘 | recruit  |   |
-| 知识产权  | tminfo  |  |
-| 参股控股  | holdingCompany  |   |
-| 分红情况  | bonus  |   |
-| 对外投资  | invest  |   |
-| 企业业务  | firmProduct  |   |
-| 竞品信息  | jingpin  |   |
-| 招投标  | bid  |   |
-| 税务评级  | taxcredit  |   |
-| 资质证书  | certificate  |   |
-| 专利信息  | patent  |   |
-| 软件著作权  | copyright  |   |
-| 最终受益人  | humanholding  |   |
-| 实际控制权  | companyholding  |   |
-| 变更记录  | changeinfo  |   |
-| 分支机构  | branch  |   |
-| 进出口信用  | importAndExport |   |
-| 名称  | product  |   |
-| 作品著作权  | copyrightWorks  |   |
-| 微信公众号  | wechat  |   |
-| 网站备案  | icp  |   |
-| 开庭公告  | announcementcourt  |   |
-| 法律诉讼  | lawsuit  |   |
-| 法院公告  | court  |   |
-| 投资事件  | touzi  |   |
-| 司法拍卖  | judicialSale  |   |
-| 债券信息  | bond  |   |
-| 核心团队  | teamMember  |   |
-| 抽查检查  | check  |   ||
-
 
 ### 表格名称中英对照表   Table Parameters Mapping Chart
 
