@@ -76,24 +76,24 @@ Tianyancha.**tianyancha_scraper**(keyword, table='all', use_default_exception=Tr
     <th >说明</th>
    </tr>
    <tr>
-    <th rowspan="11">上市信息 Listed information</th>
+    <th rowspan="12">上市信息&nbsp;Listed information</th>
     <td>股票行情</td>
     <td>volatilityNum</td>
     <td ></td>
    </tr>
    <tr>
     <td>企业简介</td>
-    <td >brief introduction</td>
+    <td >stockNum</td>
     <td ></td>
    </tr>
    <tr  >
     <td >高管信息</td>
-    <td >Executive information</td>
+    <td >seniorPeople</td>
     <td ></td>
    </tr>
    <tr  >
     <td >参股控股</td>
-    <td >quity participation</td>
+    <td >holdingCompany</td>
     <td ></td>
    </tr>
    <tr  >
@@ -103,48 +103,55 @@ Tianyancha.**tianyancha_scraper**(keyword, table='all', use_default_exception=Tr
    </tr>
    <tr>
     <td >十大股东</td>
-    <td >Ten major stockholders</td>
+    <td >topTenNum</td>
     <td ></td>
    </tr>
    <tr>
     <td >十大流通</td>
-    <td >Ten majior tradable shareholders</td>
+    <td >tenTradableNum</td>
     <td ></td>
    </tr>
    <tr>
     <td >发行相关</td>
-    <td >Issuance related</td>
+    <td >issuanceRelatedNum</td>
     <td ></td>
    </tr>
    <tr  >
     <td >股本结构</td>
-    <td >Capital stock structure</td>
+    <td >shareStructure</td>
     <td ></td>
    </tr>
    <tr  >
     <td >股本变动</td>
-    <td >Capital stock changes</td>
+    <td >equityChange</td>
     <td ></td>
    </tr>
    <tr >
     <td >分红情况</td>
-    <td >Dividends</td>
+    <td >bonus</td>
     <td ></td>
    </tr>
+   <tr >
+    <td >配股情况</td>
+    <td >allotment</td>
+    <td ></td>
+   </tr>
+   <tr >
+   </tr>
    <tr>
-    <th rowspan="14">公司背景 Company background</th>
+    <th rowspan="14">公司背景&nbsp;Company background</th>
     <td >工商信息</td>
     <td >baseInfo</td>
     <td >企业基础工商信息，包含统一社会信用代码/注册资本/注册日期/法定代表人/经营范围等信息</td>
    </tr>
    <tr >
     <td >天眼风险</td>
-    <td >Risks</td>
+    <td >riskInfo</td>
     <td ></td>
    </tr>
    <tr>
     <td >股权穿透图</td>
-    <td ></td>
+    <td >graphTreeInfo</td>
     <td ></td>
    </tr>
    <tr>
@@ -154,12 +161,12 @@ Tianyancha.**tianyancha_scraper**(keyword, table='all', use_default_exception=Tr
    </tr>
    <tr>
     <td >股东信息 </td>
-    <td >Shareholders information</td>
+    <td >holder</td>
     <td ></td>
    </tr>
    <tr >
     <td >对外投资</td>
-    <td >Investment</td>
+    <td >invest</td>
     <td ></td>
    </tr>
    <tr >
@@ -169,45 +176,45 @@ Tianyancha.**tianyancha_scraper**(keyword, table='all', use_default_exception=Tr
    </tr>
    <tr >
     <td >实际控制权</td>
-    <td > Owenership</td>
+    <td >companyholding</td>
     <td ></td>
    </tr>
    <tr >
     <td >财务简析</td>
-    <td >Brief commercial analise</td>
+    <td ></td>
     <td ></td>
    </tr>
    <tr >
     <td >企业关系</td>
-    <td >Related company</td>
+    <td >graph</td>
     <td ></td>
    </tr>
    <tr >
     <td >变更记录</td>
-    <td >Reform record</td>
+    <td >changeinfo</td>
     <td ></td>
    </tr>
    <tr >
     <td >历史沿革</td>
-    <td >Historical evolution</td>
+    <td >graphTimeInfo</td>
     <td ></td>
    </tr>
    <tr  >
     <td >公司年报</td>
-    <td >Company annual report</td>
+    <td ></td>
     <td ></td>
    </tr>
    <tr >
     <td >分支机构</td>
-    <td >Affiliates</td>
+    <td >branch</td>
     <td ></td>
    </tr>
    <tr >
    </tr>
    <tr>
-    <th rowspan="6">司法风险 Judicial risk</th>
+    <th rowspan="6">司法风险&nbsp;Judicial risk</th>
     <td >开庭公告</td>
-    <td >announcement of court session </td>
+    <td >announcementCount</td>
     <td ></td>
    </tr>
    <tr >
@@ -217,22 +224,22 @@ Tianyancha.**tianyancha_scraper**(keyword, table='all', use_default_exception=Tr
    </tr>
    <tr >
     <td >法院公告</td>
-    <td >Court bulletin</td>
+    <td >court</td>
     <td ></td>
    </tr>
    <tr >
     <td >失信人信息</td>
-    <td >dishonest person</td>
+    <td ></td>
     <td ></td>
    </tr>
    <tr >
     <td >被执行人</td>
-    <td >person subjected to execution</td>
+    <td >zhixing</td>
     <td ></td>
    </tr>
    <tr  >
     <td >司法协助</td>
-    <td >Judicial assistance</td>
+    <td ></td>
     <td ></td>
    </tr>
    <tr >
@@ -240,65 +247,65 @@ Tianyancha.**tianyancha_scraper**(keyword, table='all', use_default_exception=Tr
    <tr>
     <th rowspan="10" ing>经营风险 Operational risks</th>
     <td >经营异常</td>
-    <td >Abnormal operation</td>
+    <td >abnormal</td>
     <td ></td>
    </tr>
    <tr  >
     <td >行政处罚</td>
-    <td >administrative penalty</td>
+    <td >punish punishmentCreditchina</td>
     <td ></td>
    </tr>
    <tr >
     <td >严重违法</td>
-    <td >Serious illegal</td>
+    <td ></td>
     <td ></td>
    </tr>
    <tr >
     <td >股权出质</td>
-    <td >Equity pledge</td>
+    <td >equity</td>
     <td ></td>
    </tr>
    <tr >
     <td >动产抵押</td>
-    <td >Chattel mortgage</td>
+    <td ></td>
     <td ></td>
    </tr>
    <tr  >
     <td >欠税公告</td>
-    <td >overdue bulletin </td>
+    <td ></td>
     <td ></td>
    </tr>
    <tr >
     <td >司法拍卖</td>
-    <td >judicial sale</td>
+    <td ></td>
     <td ></td>
    </tr>
    <tr >
     <td >清算信息</td>
-    <td >Accounting information</td>
+    <td ></td>
     <td ></td>
    </tr>
    <tr >
     <td >知识产权出质</td>
-    <td >Intellectual property pledge</td>
+    <td ></td>
     <td ></td>
    </tr>
    <tr >
     <td >公示催告</td>
-    <td >Public notice</td>
+    <td ></td>
     <td ></td>
    </tr>
    <tr >
    </tr >
    <tr >
-    <th   rowspan="5" >公司发展 Company development</th>
+    <th   rowspan="5" >公司发展&nbsp;Company development</th>
     <td >融资历史</td>
-    <td >Financing history</td>
+    <td >rongzi</td>
     <td ></td>
    </tr>
    <tr  >
     <td >核心团队</td>
-    <td >core teammember</td>
+    <td >teamMember</td>
     <td ></td>
    </tr>
    <tr >
@@ -308,48 +315,49 @@ Tianyancha.**tianyancha_scraper**(keyword, table='all', use_default_exception=Tr
    </tr>
    <tr >
     <td >投资事件</td>
-    <td >investment issue</td>
+    <td >touzi</td>
     <td ></td>
    </tr>
    <tr >
     <td >竞品信息</td>
-    <td >competing product</td>
+    <td >jingpin</td>
     <td ></td>
    </tr>
    <tr  >
-    <th  rowspan="12" >经营状况Operation status </th>
+    <th  rowspan="12" >经营状况 Operation status </th>
     <td >招聘信息</td>
-    <td >recruitment</td>
+    <td >recruit</td>
     <td ></td>
    </tr>
    <tr  >
     <td >行政许可</td>
-    <td >administrative licensing</td>
+    <td >licensing
+    licensingXyzg</td>
     <td ></td>
    </tr>
    <tr >
     <td >税务评级</td>
-    <td >tax credit</td>
+    <td >taxcredit</td>
     <td ></td>
    </tr>
    <tr >
     <td >抽查检查</td>
-    <td >spot check</td>
+    <td >check</td>
     <td ></td>
    </tr>
    <tr >
     <td >资质证书</td>
-    <td >qualification certificate</td>
+    <td >certificate</td>
     <td ></td>
    </tr>
    <tr >
     <td >招投标信息</td>
-    <td >bidding </td>
+    <td >bid</td>
     <td ></td>
    </tr>
    <tr  >
     <td >产品信息</td>
-    <td >product information</td>
+    <td >product</td>
     <td ></td>
    </tr>
    <tr >
@@ -359,7 +367,7 @@ Tianyancha.**tianyancha_scraper**(keyword, table='all', use_default_exception=Tr
    </tr>
    <tr  >
     <td >进出口信用</td>
-    <td >Import and export</td>
+    <td >importAndExport</td>
     <td ></td>
    </tr>
    <tr >
@@ -369,20 +377,20 @@ Tianyancha.**tianyancha_scraper**(keyword, table='all', use_default_exception=Tr
    </tr>
    <tr >
     <td >购地信息</td>
-    <td >land purchase</td>
+    <td >purchaselandV2</td>
     <td ></td>
    </tr>
    <tr  >
     <td >电信许可</td>
-    <td >telecommunications license</td>
+    <td ></td>
     <td ></td>
    </tr>
    <tr >
    </tr >
    <tr >
-    <th rowspan="4">知识产权 Intellectual property</td>
+    <th rowspan="5">知识产权 Intellectual property</td>
     <td >商标信息</td>
-    <td >trademark</td>
+    <td >tminfo</td>
     <td ></td>
    </tr>
    <tr >
@@ -392,80 +400,81 @@ Tianyancha.**tianyancha_scraper**(keyword, table='all', use_default_exception=Tr
    </tr>
    <tr >
     <td >软件著作权</td>
-    <td >software copyright</td>
-    <td ></td>
-   </tr>
-   <tr >
-    <td >作品著作权</td>
     <td >copyright</td>
     <td ></td>
    </tr>
    <tr >
-   </tr >
-   <tr  >
-    <th rowspan="13">历史信息 History</td>
-    <td >网站备案</td>
-    <td >websit registration</td>
+    <td >作品著作权</td>
+    <td >copyrightWorks</td>
     <td ></td>
    </tr>
    <tr >
+   <td >网站备案</td>
+   <td >icp</td>
+   <td ></td>
+   </tr >
+   <tr  >
+    <th rowspan="13">历史信息&nbsp;Past</td>
+   </tr>
+   <tr >
     <td >工商信息</td>
-    <td >baseInfo</td>
+    <td >pastICCount</td>
     <td ></td>
    </tr>
    <tr >
     <td >股东信息</td>
-    <td >Shareholders information</td>
+    <td >pastHolderCount</td>
     <td ></td>
    </tr>
    <tr >
     <td >对外投资</td>
-    <td >investment</td>
+    <td >pastInvestCount</td>
     <td ></td>
    </tr>
    <tr >
     <td >开庭公告</td>
-    <td >announcement of court session </td>
+    <td >pastAnnouncementCount</td>
     <td ></td>
    </tr>
    <tr >
     <td >法律诉讼</td>
-    <td >lawsuit</td>
+    <td >passtLawsuitCount</td>
     <td ></td>
    </tr>
    <tr >
     <td >法院公告</td>
-    <td >Court bulletin</td>
+    <td >pastCourtCount</td>
     <td ></td>
    </tr>
    <tr >
     <td >失信人信息</td>
-    <td >dishonest person</td>
+    <td >pastDishonest</td>
     <td ></td>
    </tr>
    <tr >
     <td >被执行人</td>
-    <td >person subjected to execution</td>
+    <td >pastZhixing</td>
     <td ></td>
    </tr>
    <tr  >
     <td >行政处罚</td>
-    <td >administrative penalty</td>
+    <td >pastPunishmentIC
+    pastPunishmentCreditCN</td>
     <td ></td>
    </tr>
    <tr >
     <td >股权出质</td>
-    <td >Equity pledge</td>
+    <td >pastEquitycount</td>
     <td ></td>
    </tr>
    <tr >
     <td >动产抵押</td>
-    <td >Chattel mortgage</td>
+    <td ></td>
     <td ></td>
    </tr>
    <tr  >
     <td >行政许可</td>
-    <td >administrative licensing</td>
+    <td >getPastLicenseCN</td>
     <td ></td>
    </tr>
 </table>
