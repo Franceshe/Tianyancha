@@ -27,7 +27,7 @@ Tianyancha.**tianyancha_scraper**(keyword, table='all', use_default_exception=Tr
 
 
 ### 表格参数对照表   Table Parameters Mapping Chart
-
+参数结尾有"*"的为可能有误的参数名称，请手工复查`div.__container__`后面的内容。
 
 <table><tbody>
 
@@ -104,7 +104,7 @@ Tianyancha.**tianyancha_scraper**(keyword, table='all', use_default_exception=Tr
     <th rowspan="14">公司背景&nbsp;Company background</th>
     <td >工商信息</td>
     <td >baseInfo</td>
-    <td >企业基础工商信息，包含统一社会信用代码/注册资本/注册日期/法定代表人/经营范围等信息</td>
+    <td >企业基础工商信息，包含统一社会信用代码/注册资本/注册日期/法定代表人/经营范围等信息。</td>
    </tr>
    <tr >
     <td >天眼风险</td>
@@ -143,8 +143,8 @@ Tianyancha.**tianyancha_scraper**(keyword, table='all', use_default_exception=Tr
    </tr>
    <tr >
     <td >财务简析</td>
-    <td ></td>
-    <td ></td>
+    <td >financialAnalysis*</td>
+    <td >付费可见内容。</td>
    </tr>
    <tr >
     <td >企业关系</td>
@@ -163,7 +163,7 @@ Tianyancha.**tianyancha_scraper**(keyword, table='all', use_default_exception=Tr
    </tr>
    <tr  >
     <td >公司年报</td>
-    <td ></td>
+    <td >report*</td>
     <td ></td>
    </tr>
    <tr >
@@ -191,7 +191,7 @@ Tianyancha.**tianyancha_scraper**(keyword, table='all', use_default_exception=Tr
    </tr>
    <tr >
     <td >失信人信息</td>
-    <td ></td>
+    <td >dishonest</td>
     <td ></td>
    </tr>
    <tr >
@@ -214,7 +214,7 @@ Tianyancha.**tianyancha_scraper**(keyword, table='all', use_default_exception=Tr
    </tr>
    <tr  >
     <td >行政处罚</td>
-    <td >punish punishmentCreditchina</td>
+    <td >punish</td>
     <td ></td>
    </tr>
    <tr >
@@ -239,7 +239,7 @@ Tianyancha.**tianyancha_scraper**(keyword, table='all', use_default_exception=Tr
    </tr>
    <tr >
     <td >司法拍卖</td>
-    <td ></td>
+    <td >judicialSale</td>
     <td ></td>
    </tr>
    <tr >
@@ -254,7 +254,7 @@ Tianyancha.**tianyancha_scraper**(keyword, table='all', use_default_exception=Tr
    </tr>
    <tr >
     <td >公示催告</td>
-    <td ></td>
+    <td >publicnoticeItem</td>
     <td ></td>
    </tr>
    <tr >
