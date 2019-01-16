@@ -214,7 +214,8 @@ Tianyancha.**tianyancha_scraper**(keyword, table='all', use_default_exception=Tr
    </tr>
    <tr  >
     <td >行政处罚</td>
-    <td >punish</td>
+    <td >punish,
+         punishmentCreditchina</td>
     <td ></td>
    </tr>
    <tr >
@@ -344,7 +345,7 @@ Tianyancha.**tianyancha_scraper**(keyword, table='all', use_default_exception=Tr
    </tr>
    <tr  >
     <td >电信许可</td>
-    <td ></td>
+    <td >permission</td>
     <td ></td>
    </tr>
    <tr >
@@ -420,7 +421,7 @@ Tianyancha.**tianyancha_scraper**(keyword, table='all', use_default_exception=Tr
    </tr>
    <tr  >
     <td >行政处罚</td>
-    <td >pastPunishmentIC
+    <td >pastPunishmentIC,
     pastPunishmentCreditCN</td>
     <td ></td>
    </tr>
