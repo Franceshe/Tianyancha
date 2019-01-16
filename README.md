@@ -214,7 +214,8 @@ Tianyancha.**tianyancha_scraper**(keyword, table='all', use_default_exception=Tr
    </tr>
    <tr  >
     <td >行政处罚</td>
-    <td >punish</td>
+    <td >punish,
+         punishmentCreditchina</td>
     <td ></td>
    </tr>
    <tr >
@@ -380,22 +381,22 @@ Tianyancha.**tianyancha_scraper**(keyword, table='all', use_default_exception=Tr
    </tr>
    <tr >
     <td >工商信息</td>
-    <td >baseInfo</td>
+    <td >pastICCount</td>
     <td ></td>
    </tr>
    <tr >
     <td >股东信息</td>
-    <td >holder</td>
+    <td >pastHolderCount</td>
     <td ></td>
    </tr>
    <tr >
     <td >对外投资</td>
-    <td >invest</td>
+    <td >pastInvestCount</td>
     <td ></td>
    </tr>
    <tr >
     <td >开庭公告</td>
-    <td >announcementcourt</td>
+    <td >pastAnnouncementCount</td>
     <td ></td>
    </tr>
    <tr >
@@ -420,7 +421,7 @@ Tianyancha.**tianyancha_scraper**(keyword, table='all', use_default_exception=Tr
    </tr>
    <tr  >
     <td >行政处罚</td>
-    <td >pastPunishmentIC
+    <td >pastPunishmentIC,
     pastPunishmentCreditCN</td>
     <td ></td>
    </tr>
