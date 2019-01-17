@@ -27,7 +27,7 @@ Tianyancha.**tianyancha_scraper**(keyword, table='all', use_default_exception=Tr
 
 
 ### 表格参数对照表   Table Parameters Mapping Chart
-参数结尾有"*"的为可能有误的参数名称，请手工复查`div.__container__`后面的内容。
+参数结尾有"*"的为可能有误的参数名称，请手工复查`div._container_`后面的内容。
 
 <table><tbody>
 
