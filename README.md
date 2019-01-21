@@ -452,8 +452,11 @@ Tianyancha.**tianyancha_scraper**(keyword, table='all', use_default_exception=Tr
 
 ## 捐助 Donation
 捐助是一种美德。 :heart::yellow_heart::blue_heart:
-
+1. 资金
 <img src="https://user-images.githubusercontent.com/10396208/49501270-6dcd4580-f8ad-11e8-89c9-ff30922df917.jpg" width="300" height="300" />
 <!--- Alipay
 <img src="https://user-images.githubusercontent.com/10396208/49501461-e03e2580-f8ad-11e8-8c21-3cb9b71cb18a.jpg" width="300" />
 -->
+2. 点赞
+请为知乎相关问题的[回答](像天眼查这种网站怎么进行全爬虫？ - 张乔的回答 - 知乎
+https://www.zhihu.com/question/277100386/answer/569032807)点赞，帮助更多人受惠于本项目。
