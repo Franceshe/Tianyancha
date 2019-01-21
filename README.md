@@ -458,5 +458,4 @@ Tianyancha.**tianyancha_scraper**(keyword, table='all', use_default_exception=Tr
 <img src="https://user-images.githubusercontent.com/10396208/49501461-e03e2580-f8ad-11e8-8c21-3cb9b71cb18a.jpg" width="300" />
 -->
 2. 点赞
-请为知乎相关问题的[回答](像天眼查这种网站怎么进行全爬虫？ - 张乔的回答 - 知乎
-https://www.zhihu.com/question/277100386/answer/569032807)点赞，帮助更多人受惠于本项目。
+请为知乎相关问题`像天眼查这种网站怎么进行全爬虫？`的[回答](https://www.zhihu.com/question/277100386/answer/569032807)点赞，帮助更多人受惠于本项目。
