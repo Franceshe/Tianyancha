@@ -24,14 +24,14 @@ class Tianyancha:
         self.username = username
         self.password = password
         self.headless = headless
-        self.driver = self.login()
+        self.driver = self.login(text_login='请输入11位手机号码', text_password='请输入登录密码')
 
     # 登录天眼查
-    def login(self):
+    def login(self, text_login, text_password):
         time_start = time.time()
 
         # 操作行为提示
-        print ('登录过程中请勿操作鼠标键盘！请保持优雅勿频繁（间隔小于1分钟）登录以减轻服务器负载。')
+        print ('在自动输入完用户名和密码前，请勿操作鼠标键盘！请保持优雅勿频繁（间隔小于1分钟）登录以减轻服务器负载。')
 
         # 设置是否为隐藏加载并打开浏览器
         if self.headless:
@@ -41,14 +41,26 @@ class Tianyancha:
         else:
             driver = webdriver.Chrome()
 
+        # 强制声明浏览器长宽为1024*768以适配所有屏幕
+        driver.set_window_position(0, 0)
+        driver.set_window_size(1024, 768)
         driver.get(self.url)
 
         # 模拟登陆：Selenium Locating Elements by Xpath
         time.sleep(1)
+
+        # 关闭底栏
+        driver.find_element_by_xpath("//img[@id='tyc_banner_close']").click()
         driver.find_element_by_xpath("//div[@tyc-event-ch='Login.PasswordLogin']").click()
-        driver.find_elements_by_xpath("//input[@placeholder='请输入手机号码']")[-2].send_keys(self.username)
-        driver.find_element_by_xpath("//input[@placeholder='请输入密码']").send_keys(self.password)
-        driver.find_element_by_xpath("//div[@tyc-event-ch='Login.PasswordLogin.Login']").click()
+        # 天眼查官方会频繁变化登录框的占位符,所以设置两个新参数来定义占位符
+        driver.find_elements_by_xpath("//input[@placeholder='{}']".format(text_login))[-2].send_keys(self.username)
+        driver.find_elements_by_xpath("//input[@placeholder='{}']".format(text_password))[-1].send_keys(self.password)
+
+        # 手工登录，完成滑块验证码
+        print ('请现在开始操作键盘鼠标，在15s内手工完成滑块验证码。批量爬取只需一次登录，该自动化将在稍后版本中提供。')
+        time.sleep(10)
+        print ('还剩5秒。')
+        time.sleep(5)
 
         time_end = time.time()
         print('您的本次登录共用时{}秒。'.format(int(time_end - time_start)))
@@ -113,19 +125,17 @@ class Tianyancha:
                 abstract = driver.find_element_by_xpath("//div[@class='summary']")
                 base_table['简介'] = driver.execute_script("return arguments[0].textContent", abstract).strip()[3:]
 
+            # 处理工商信息的两个tables
             tabs = driver.find_elements_by_xpath("//div[@id='_container_baseInfo']/table")
-            rows1 = tabs[0].find_elements_by_tag_name('tr')
 
+            # 处理第一个table
+            rows1 = tabs[0].find_elements_by_tag_name('tr')
             if len(rows1[1].find_elements_by_tag_name('td')[0].text.split('\n')[0]) < 2:
                 base_table['法人代表'] = rows1[1].find_elements_by_tag_name('td')[0].text.split('\n')[1]
             else:
                 base_table['法人代表'] = rows1[1].find_elements_by_tag_name('td')[0].text.split('\n')[0]
 
-            # TODO：注册资本显示不对，需要使用转码函数：可以参考GitHub另一个人的解法
-            base_table['注册资本'] = rows1[1].find_elements_by_tag_name('td')[1].text.split('\n')[1]
-            # TODO：公司状态尚未爬取
-            base_table['公司状态'] = ''#rows1[1].find_elements_by_tag_name('td')[1].text.split('\n')[5]
-
+            # 处理第二个table
             rows2 = tabs[1].find_elements_by_tag_name('tr')
 
             # 使用循环批量爬取base_table_2
@@ -141,10 +151,6 @@ class Tianyancha:
                     base_table[base_table_2.iloc[2*i,1]] = base_table_2.iloc[2*i+1,1] # 将base_table_2的数据装回base_table
             else:
                 print('base_table_2（公司基本信表2）行数不为偶数，请检查代码！')
-
-            # 利用营业期限未加密编码修正注册时间和核准日期
-            base_table['注册时间'] = base_table['营业期限'].split('至')[0]#rows1[1].find_elements_by_tag_name('td')[1].text.split('\n')[3] ##直接截取营业期限的起始日
-            base_table['核准日期'] = base_table['营业期限'].split('至')[0]
 
             return pd.DataFrame([base_table])
 
