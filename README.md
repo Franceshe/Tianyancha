@@ -442,6 +442,15 @@ Tianyancha.**tianyancha_scraper**(keyword, table='all', use_default_exception=Tr
    </tr>
 </table>
 
+## 默认排除列表 Default Exception List
+use_default_exception参数的解释。
+
+```python
+list_exception = ['recruit', 'tmInfo', 'holdingCompany', 'invest', 'bonus', 'firmProduct', 'jingpin', \
+                'bid', 'taxcredit', 'certificate', 'patent', 'copyright', 'product', 'importAndExport', \
+                'copyrightWorks', 'wechat', 'icp', 'announcementcourt', 'lawsuit', 'court', \
+                'branch', 'touzi', 'judicialSale', 'bond', 'teamMember', 'check']
+```
 
 ## 运行依赖 Dependencies
 1. [Chrome浏览器](https://www.google.com/chrome/)

@@ -367,20 +367,22 @@ class Tianyancha:
             list_json = WriterJson().odict_to_json(dic)
             WriterJson().write_json(json_list=list_json, file_name=keyword+'.json')
 
-        # 主程序
-        time_start = time.time()
+        def main():
+            time_start = time.time()
 
-        url_search = 'http://www.tianyancha.com/search?key=%s&checkFrom=searchBox' % keyword
-        self.driver = search_company(self.driver, url_search)
-        table_dict = scrapy(self.driver, table, use_default_exception)
-        if export == 'xlsx':
-            gen_excel(table_dict, keyword)
-        elif export == 'json':
-            gen_json(table_dict, keyword)
-        else:
-            print("请选择正确的输出格式，支持'xlsx'和'json'。")
+            url_search = 'http://www.tianyancha.com/search?key=%s&checkFrom=searchBox' % keyword
+            self.driver = search_company(self.driver, url_search)
+            table_dict = scrapy(self.driver, table, use_default_exception)
+            if export == 'xlsx':
+                gen_excel(table_dict, keyword)
+            elif export == 'json':
+                gen_json(table_dict, keyword)
+            else:
+                print("请选择正确的输出格式，支持'xlsx'和'json'。")
 
-        time_end = time.time()
-        print('您的本次爬取共用时{}秒。'.format(int(time_end - time_start)))
+            time_end = time.time()
+            print('您的本次爬取共用时{}秒。'.format(int(time_end - time_start)))
+
+        main()
 
         return table_dict
