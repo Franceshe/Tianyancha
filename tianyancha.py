@@ -57,7 +57,7 @@ class Tianyancha:
         driver.find_elements_by_xpath("//input[@placeholder='{}']".format(text_password))[-1].send_keys(self.password)
 
         # 手工登录，完成滑块验证码
-        print ('请现在开始操作键盘鼠标，在15s内手工完成滑块验证码。批量爬取只需一次登录，该自动化将在稍后版本中提供。')
+        print ('请现在开始操作键盘鼠标，在15s内点击登录并手工完成滑块验证码。批量爬取只需一次登录。')
         time.sleep(10)
         print ('还剩5秒。')
         time.sleep(5)
@@ -72,7 +72,8 @@ class Tianyancha:
                            table='all',
                            use_default_exception=True,
                            change_page_interval=2,
-                           export='xlsx'):
+                           export='xlsx',
+                           quit_driver=True):
         """
         天眼查爬虫主程序。
         :param keyword: 公司名称，支持模糊或部分检索。比如"北京鸿智慧通实业有限公司"。
@@ -268,7 +269,7 @@ class Tianyancha:
             # df = df.drop(columns=['序号'])
             return df
 
-        def scrapy(driver, table, use_default_exception):
+        def scrapy(driver, table, use_default_exception, quit_driver=quit_driver):
             # 强制确认table类型为list：当只爬取一个元素的时候很可能用户会只传入表明str
             if isinstance(table, str):
                 list_table = []
@@ -350,7 +351,8 @@ class Tianyancha:
                     pass
 
             # 退出浏览器
-            driver.quit()
+            if quit_driver:
+                driver.quit()
 
             return table_dict
 
@@ -367,22 +369,40 @@ class Tianyancha:
             list_json = WriterJson().odict_to_json(dic)
             WriterJson().write_json(json_list=list_json, file_name=keyword+'.json')
 
-        def main():
-            time_start = time.time()
+        time_start = time.time()
 
-            url_search = 'http://www.tianyancha.com/search?key=%s&checkFrom=searchBox' % keyword
-            self.driver = search_company(self.driver, url_search)
-            table_dict = scrapy(self.driver, table, use_default_exception)
-            if export == 'xlsx':
-                gen_excel(table_dict, keyword)
-            elif export == 'json':
-                gen_json(table_dict, keyword)
-            else:
-                print("请选择正确的输出格式，支持'xlsx'和'json'。")
+        url_search = 'http://www.tianyancha.com/search?key=%s&checkFrom=searchBox' % keyword
+        self.driver = search_company(self.driver, url_search)
+        table_dict = scrapy(self.driver, table, use_default_exception)
+        if export == 'xlsx':
+            gen_excel(table_dict, keyword)
+        elif export == 'json':
+            gen_json(table_dict, keyword)
+        else:
+            print("请选择正确的输出格式，支持'xlsx'和'json'。")
 
-            time_end = time.time()
-            print('您的本次爬取共用时{}秒。'.format(int(time_end - time_start)))
-
-        main()
-
+        time_end = time.time()
+        print('您的本次爬取共用时{}秒。'.format(int(time_end - time_start)))
         return table_dict
+
+
+    # 定义批量爬取爬虫
+    def tianyancha_scraper_batch(self, input_template='input.xlsx', change_page_interval=2, export='xlsx'):
+        df_input = pd.read_excel(input_template, encoding='gb18030').dropna(axis=1, how='all')
+        list_dicts = []
+
+        # 逐个处理输入信息
+        for i in range(len(df_input)):
+            keyword = df_input['公司名称'].iloc[i]
+            tables = []
+            for j in range(len(df_input.columns) - 2):
+                if not pd.isna(df_input.iloc[i, j + 2]):
+                    tables.append(df_input.iloc[i, j + 2])
+
+            # 批量调取天眼查爬虫
+            table_dict = self.tianyancha_scraper(keyword=keyword, table=tables, change_page_interval=change_page_interval, export=export, quit_driver=False)
+            list_dicts.append(table_dict)
+
+        # 全部运行完后退出浏览器
+        self.driver.quit()
+        return tuple(list_dicts)
