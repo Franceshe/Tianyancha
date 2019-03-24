@@ -8,10 +8,16 @@
 ## 使用方法 Instruction
 **输入更换为自己的天眼查账户、密码和查询关键字。** 生成的结果文件请参考`北京鸿智慧通实业有限公司.xlsx`和`中信证券股份有限公司.json`。
 
-运行下面的示例代码将执行：“用户User输入密码Password登录后，爬取关键字为Keyword的企业的工商信息(baseInfo)，结果返回table_dict并保存为JSON文件。”
+运行下面的示例代码将分别执行：
+1. **单个**：“用户User输入密码Password登录后，爬取关键字为Keyword的企业的工商信息(baseInfo)，结果返回table_dict并保存为JSON文件。”
+2. **批量**：“用户User输入密码Password登录后，程序根据`input.xlsx`中分别设置的表名来批量爬取多个公司信息，结果返回在由多个table_dict拼接而成的tuple_dicts并分别保存为EXCEL文件。最后，在终端打印出第一个公司的所需信息。”
 ```python
 from tianyancha import Tianyancha
+# 单个
 table_dict = Tianyancha(username='User', password='Password').tianyancha_scraper(keyword='Keyword', table='baseInfo', export='json')
+# 批量
+tuple_dicts = Tianyancha(username='User', password='Password').tianyancha_scraper_batch(input_template='input.xlsx', export='xlsx')
+tuple_dicts[0]
 ```
 
 ### 函数参数 Function Parameters
