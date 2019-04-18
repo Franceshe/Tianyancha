@@ -5,6 +5,9 @@
 * **关键字的模糊识别**：利用天眼查搜索框的已有模糊检索能力，方便用户仅能提供部分关键字的情况。
 * **元素定位**：特殊表格（比如'baseInfo'）使用了Selenium提供的API，具体请参考[Locating Elements](https://selenium-python.readthedocs.io/locating-elements.html)。一般表格使用pandas的[read_html](https://pandas.pydata.org/pandas-docs/stable/generated/pandas.read_html.html)方法。
 
+## 下载安装 Installation
+`pip install tianyancha`
+
 ## 使用方法 Instruction
 **输入更换为自己的天眼查账户、密码和查询关键字。** 生成的结果文件请参考`北京鸿智慧通实业有限公司.xlsx`和`中信证券股份有限公司.json`。
 
