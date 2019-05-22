@@ -5,6 +5,8 @@
 * **关键字的模糊识别**：利用天眼查搜索框的已有模糊检索能力，方便用户仅能提供部分关键字的情况。
 * **元素定位**：特殊表格（比如'baseInfo'）使用了Selenium提供的API，具体请参考[Locating Elements](https://selenium-python.readthedocs.io/locating-elements.html)。一般表格使用pandas的[read_html](https://pandas.pydata.org/pandas-docs/stable/generated/pandas.read_html.html)方法。
 
+>What is [Tianyancha](https://www.tianyancha.com/)? Read [this article](https://everipedia.org/wiki/lang_en/tian-yan-cha/) to find out.
+
 ## 下载安装 Installation
 `pip install tianyancha`
 
@@ -472,10 +474,9 @@ list_exception = ['recruit', 'tmInfo', 'holdingCompany', 'invest', 'bonus', 'fir
 捐助是一种美德。 :heart::yellow_heart::blue_heart:
 
 1. 资金
+
 <img src="https://user-images.githubusercontent.com/10396208/49501270-6dcd4580-f8ad-11e8-89c9-ff30922df917.jpg" width="300" height="300" />
-<!--- Alipay
-<img src="https://user-images.githubusercontent.com/10396208/49501461-e03e2580-f8ad-11e8-8c21-3cb9b71cb18a.jpg" width="300" />
--->
+<img src="https://user-images.githubusercontent.com/10396208/49501461-e03e2580-f8ad-11e8-8c21-3cb9b71cb18a.jpg" width="300" height="300" //>
 
 2. 点赞
 
