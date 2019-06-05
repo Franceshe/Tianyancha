@@ -481,3 +481,7 @@ list_exception = ['recruit', 'tmInfo', 'holdingCompany', 'invest', 'bonus', 'fir
 2. 点赞
 
 请为知乎相关问题`像天眼查这种网站怎么进行全爬虫？`的[回答](https://www.zhihu.com/question/277100386/answer/569032807)点赞，帮助更多人受惠于本项目。
+
+## 新功能推荐 New Features
+[![Feature Requests](http://feathub.com/qzcool/Tianyancha?format=svg)](http://feathub.com/qzcool/Tianyancha)
+
