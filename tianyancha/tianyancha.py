@@ -5,14 +5,16 @@
 
 __author__ = 'Qiao Zhang'
 
-import json
 import codecs
-import time
+import json
+import pickle
 import re
+import time
+from collections import OrderedDict
+
 import pandas as pd
 from bs4 import BeautifulSoup
 from selenium import webdriver
-from collections import OrderedDict
 
 
 class WriterJson:
@@ -20,11 +22,11 @@ class WriterJson:
         pass
 
     # 将单个DataFrame保存为JSON，确保中文显示正确
-    def df_to_json(self, df, orient:str = 'table'):
+    def df_to_json(self, df, orient: str = 'table'):
         return json.loads(df.to_json(orient, force_ascii=False))
 
     # 将多个DataFrames组成的字典批量保存为JSON，确保中文显示正确:服务于类似`金融产品信息表`这样的包含多
-    def dfs_to_json(self, dic_dfs, orient:str = 'table'):
+    def dfs_to_json(self, dic_dfs, orient: str = 'table'):
         pass
 
     # 将单个OrderedDict保存为JSON List
@@ -35,7 +37,7 @@ class WriterJson:
         # 把列表中的每个df通过list append变成json
         for i in range(len(items)):
             try:
-                list_JSONed.append([items[i][0],json.loads(items[i][1].to_json(orient='table', force_ascii=False))])
+                list_JSONed.append([items[i][0], json.loads(items[i][1].to_json(orient='table', force_ascii=False))])
             except:
                 print(items[i][0] + '表为空，请检查。')
         # 记录版本信息
@@ -50,12 +52,12 @@ class WriterJson:
     # 将一个json list或者json dict存入文件
     def write_json(self, json_list, file_name, indent=4, encoding='utf-8'):
         f_out = codecs.open(file_name, 'w', encoding=encoding)
-        json_str = json.dumps(json_list, indent=indent, ensure_ascii=False) #, encoding=encoding)
+        json_str = json.dumps(json_list, indent=indent, ensure_ascii=False)  # , encoding=encoding)
         f_out.write(json_str)
         f_out.close()
 
-class Tianyancha:
 
+class Tianyancha:
     # 常量定义
     url = 'https://www.tianyancha.com/login'
 
@@ -70,7 +72,7 @@ class Tianyancha:
         time_start = time.time()
 
         # 操作行为提示
-        print ('在自动输入完用户名和密码前，请勿操作鼠标键盘！请保持优雅勿频繁（间隔小于1分钟）登录以减轻服务器负载。')
+        print('在自动输入完用户名和密码前，请勿操作鼠标键盘！请保持优雅勿频繁（间隔小于1分钟）登录以减轻服务器负载。')
 
         # 设置是否为隐藏加载并打开浏览器
         if self.headless:
@@ -85,24 +87,33 @@ class Tianyancha:
         driver.set_window_size(1024, 768)
         driver.get(self.url)
 
+        try:
+            for cookie in pickle.load(open('d:\\cookies.pkl', 'rb')):
+                if 'expiry' in cookie:
+                    del cookie['expiry']
+                driver.add_cookie(cookie)
+        except FileNotFoundError:
+            pass
+
         # 模拟登陆：Selenium Locating Elements by Xpath
         time.sleep(1)
 
         # 关闭底栏
-        driver.find_element_by_xpath("//img[@id='tyc_banner_close']").click()
+        # driver.find_element_by_xpath("//img[@id='tyc_banner_close']").click()
         driver.find_element_by_xpath("//div[@tyc-event-ch='Login.PasswordLogin']").click()
         # 天眼查官方会频繁变化登录框的占位符,所以设置两个新参数来定义占位符
         driver.find_elements_by_xpath("//input[@placeholder='{}']".format(text_login))[-2].send_keys(self.username)
         driver.find_elements_by_xpath("//input[@placeholder='{}']".format(text_password))[-1].send_keys(self.password)
 
         # 手工登录，完成滑块验证码
-        print ('请现在开始操作键盘鼠标，在15s内点击登录并手工完成滑块验证码。批量爬取只需一次登录。')
+        print('请现在开始操作键盘鼠标，在15s内点击登录并手工完成滑块验证码。批量爬取只需一次登录。')
         time.sleep(10)
-        print ('还剩5秒。')
+        print('还剩5秒。')
         time.sleep(5)
 
         time_end = time.time()
         print('您的本次登录共用时{}秒。'.format(int(time_end - time_start)))
+        pickle.dump(driver.get_cookies(), open('d:\\cookies.pkl', 'wb'))
         return driver
 
     # 定义天眼查爬虫
@@ -134,9 +145,10 @@ class Tianyancha:
             try:
                 # TODO：'中信证券股份有限公司'无法正确检索
                 try:
-                    url2 = soup1.find('div',class_='header').find('a', class_="name ").attrs['href']
+                    url2 = soup1.find('div', class_='header').find('a', class_="name ").attrs['href']
                 except:
-                    url2 = driver.find_element_by_xpath("//div[@class='content']/div[@class='header']/a[@class='name ']").get_attribute('href')
+                    url2 = driver.find_element_by_xpath(
+                        "//div[@class='content']/div[@class='header']/a[@class='name ']").get_attribute('href')
                 print('登陆成功。')
             except:
                 print('登陆过于频繁，请1分钟后再次尝试。')
@@ -156,10 +168,10 @@ class Tianyancha:
             base_table['电话'] = base_info.text.split('电话：')[1].split('邮箱：')[0].split('查看')[0]
             base_table['邮箱'] = base_info.text.split('邮箱：')[1].split('\n')[0].split('查看')[0]
             base_table['网址'] = base_info.text.split('网址：')[1].split('地址')[0]
-            base_table['地址'] = base_info.text.split('地址：')[1].split('\n')[0]
+            base_table['地址'] = base_info.text.split('地址：')[1].split('\n')[1]
 
             try:
-                abstract = driver.find_element_by_xpath("//div[@class='summary']/script") # @class='sec-c2 over-hide'
+                abstract = driver.find_element_by_xpath("//div[@class='summary']/script")  # @class='sec-c2 over-hide'
                 base_table['简介'] = driver.execute_script("return arguments[0].textContent", abstract).strip()
             except:
                 abstract = driver.find_element_by_xpath("//div[@class='summary']")
@@ -179,18 +191,33 @@ class Tianyancha:
             rows2 = tabs[1].find_elements_by_tag_name('tr')
 
             # 使用循环批量爬取base_table_2
-            base_table_2 = pd.DataFrame(columns=['Row_Index','Row_Content'])
+            base_table_2 = pd.DataFrame(columns=['Row_Index', 'Row_Content'])
 
             for rows2_row in range(len(rows2)):
                 for element_unit in rows2[rows2_row].find_elements_by_tag_name('td'):
                     if element_unit.text != '':
-                        base_table_2 = base_table_2.append({'Row_Index':rows2_row,'Row_Content':element_unit.text},ignore_index=True)
+                        base_table_2 = base_table_2.append({'Row_Index': rows2_row, 'Row_Content': element_unit.text},
+                                                           ignore_index=True)
 
-            if len(base_table_2) % 2 == 0:
-                for i in range(int(len(base_table_2)/2)):
-                    base_table[base_table_2.iloc[2*i,1]] = base_table_2.iloc[2*i+1,1] # 将base_table_2的数据装回base_table
-            else:
-                print('base_table_2（公司基本信表2）行数不为偶数，请检查代码！')
+            # `base_table_2' 包含 `评分'，故长度不是偶数
+            # if len(base_table_2) % 2 == 0:
+            #     for i in range(int(len(base_table_2)/2)):
+            #         base_table[base_table_2.iloc[2*i,1]] = base_table_2.iloc[2*i+1,1] # 将base_table_2的数据装回base_table
+            # else:
+            #     print('base_table_2（公司基本信表2）行数不为偶数，请检查代码！')
+            key, val = None, None
+            for i in range(len(base_table_2)):
+                value = base_table_2.iloc[i, 1]
+                if value.startswith('评分'):
+                    key = '评分'
+                    val = value[2:].replace('\n', '')
+                elif key is None:
+                    key = value
+                    continue
+                else:
+                    val = value
+                base_table[key] = val
+                key = None
 
             return pd.DataFrame([base_table])
 
@@ -198,10 +225,15 @@ class Tianyancha:
         # TODO: staff_info定位不准？
         def get_staff_info(driver):
             staff_list = []
-            staff_info = driver.find_elements_by_xpath("//div[@class='in-block f14 new-c5 pt9 pl10 overflow-width vertival-middle new-border-right']")
+            staff_info = driver.find_elements_by_xpath(
+                "//div[@class='in-block f14 new-c5 pt9 pl10 overflow-width vertival-middle new-border-right']")
             for i in range(len(staff_info)):
-                position = driver.find_elements_by_xpath("//div[@class='in-block f14 new-c5 pt9 pl10 overflow-width vertival-middle new-border-right']")[i].text
-                person = driver.find_elements_by_xpath("//a[@class='overflow-width in-block vertival-middle pl15 mb4']")[i].text
+                position = driver.find_elements_by_xpath(
+                    "//div[@class='in-block f14 new-c5 pt9 pl10 overflow-width vertival-middle new-border-right']")[
+                    i].text
+                person = \
+                    driver.find_elements_by_xpath("//a[@class='overflow-width in-block vertival-middle pl15 mb4']")[
+                        i].text
                 staff_list.append({'职位': position, '人员名称': person})
             staff_table = pd.DataFrame(staff_list, columns=['职位', '人员名称'])
             return staff_table
@@ -209,18 +241,20 @@ class Tianyancha:
         # 特殊处理:上市公告
         # TODO:加入类别搜索功能
         def get_announcement_info(driver):
-            announcement_df = pd.DataFrame(columns=['序号','日期','上市公告','上市公告网页链接']) ## 子函数自动获取columns
+            announcement_df = pd.DataFrame(columns=['序号', '日期', '上市公告', '上市公告网页链接'])  ## 子函数自动获取columns
             # TODO:可抽象，函数化
             content = driver.page_source.encode('utf-8')
             # TODO：能不能只Encode局部的driver
             soup = BeautifulSoup(content, 'lxml')
-            announcement_info = soup.find('div',id='_container_announcement').find('tbody').find_all('tr')
+            announcement_info = soup.find('div', id='_container_announcement').find('tbody').find_all('tr')
             for i in range(len(announcement_info)):
                 index = announcement_info[i].find_all('td')[0].get_text()
                 date = announcement_info[i].find_all('td')[1].get_text()
                 announcement = announcement_info[i].find_all('td')[2].get_text()
-                announcement_url = 'https://www.tianyancha.com' + announcement_info[i].find_all('td')[2].find('a')['href']
-                announcement_df = announcement_df.append({'序号':index,'日期':date,'上市公告':announcement,'上市公告网页链接':announcement_url}, ignore_index=True)
+                announcement_url = 'https://www.tianyancha.com' + announcement_info[i].find_all('td')[2].find('a')[
+                    'href']
+                announcement_df = announcement_df.append(
+                    {'序号': index, '日期': date, '上市公告': announcement, '上市公告网页链接': announcement_url}, ignore_index=True)
 
             ### 判断此表格是否有翻页功能:重新封装change_page函数
             announcement_table = driver.find_element_by_xpath("//div[contains(@id,'_container_announcement')]")
@@ -229,20 +263,24 @@ class Tianyancha:
                 PageCount = announcement_table.find_element_by_class_name('company_pager').text
                 PageCount = re.sub("\D", "", PageCount)  # 使用正则表达式取字符串中的数字 ；\D表示非数字的意思
                 for i in range(int(PageCount) - 1):
-                    button = table.find_element_by_xpath(".//a[@class='num -next']") #历史class_name（天眼查的反爬措施）：'pagination-next  ',''
+                    button = table.find_element_by_xpath(
+                        ".//a[@class='num -next']")  # 历史class_name（天眼查的反爬措施）：'pagination-next  ',''
                     driver.execute_script("arguments[0].click();", button)
                     time.sleep(change_page_interval)
                     # TODO：函数化
                     content = driver.page_source.encode('utf-8')
                     # TODO：能不能只Encode局部的driver
                     soup = BeautifulSoup(content, 'lxml')
-                    announcement_info = soup.find('div',id='_container_announcement').find('tbody').find_all('tr')
+                    announcement_info = soup.find('div', id='_container_announcement').find('tbody').find_all('tr')
                     for i in range(len(announcement_info)):
                         index = announcement_info[i].find_all('td')[0].get_text()
                         date = announcement_info[i].find_all('td')[1].get_text()
                         announcement = announcement_info[i].find_all('td')[2].get_text()
-                        announcement_url = 'https://www.tianyancha.com' + announcement_info[i].find_all('td')[2].find('a')['href']
-                        announcement_df = announcement_df.append({'序号':index,'日期':date,'上市公告':announcement,'上市公告网页链接':announcement_url}, ignore_index=True)
+                        announcement_url = 'https://www.tianyancha.com' + \
+                                           announcement_info[i].find_all('td')[2].find('a')['href']
+                        announcement_df = announcement_df.append(
+                            {'序号': index, '日期': date, '上市公告': announcement, '上市公告网页链接': announcement_url},
+                            ignore_index=True)
             return announcement_df
 
         # 标准表格爬取函数
@@ -256,7 +294,7 @@ class Tianyancha:
             # TODO：加入更多标准的表格处理条件
             return df
 
-        def tryonclick(table): # table实质上是selenium WebElement
+        def tryonclick(table):  # table实质上是selenium WebElement
             # 测试是否有翻页
             ## 把条件判断写进tryonclick中
             try:
@@ -264,7 +302,7 @@ class Tianyancha:
                 table.find_element_by_tag_name('ul')
                 onclickflag = 1
             except Exception:
-                print("没有翻页") ## 声明表格名称: name[x] +
+                print("没有翻页")  ## 声明表格名称: name[x] +
                 onclickflag = 0
             return onclickflag
 
@@ -274,7 +312,7 @@ class Tianyancha:
                 table.find_element_by_xpath("//div[contains(@class,'over-hide changeTabLine f14')]")
                 ontapflag = 1
             except:
-                print("没有时间切换页") ## 声明表格名称: name[x] +
+                print("没有时间切换页")  ## 声明表格名称: name[x] +
                 ontapflag = 0
             return ontapflag
 
@@ -286,12 +324,13 @@ class Tianyancha:
 
             for _ in range(int(PageCount) - 1):
                 # TODO:抽象化：频繁变换点
-                button = table.find_element_by_xpath(".//a[@class='num -next']") #历史class_name（天眼查的反爬措施）：'pagination-next  ',''
+                button = table.find_element_by_xpath(
+                    ".//a[@class='num -next']")  # 历史class_name（天眼查的反爬措施）：'pagination-next  ',''
                 driver.execute_script("arguments[0].click();", button)
                 ####################################################################################
-                time.sleep(change_page_interval) # 更新换页时间间隔,以应对反爬虫
+                time.sleep(change_page_interval)  # 更新换页时间间隔,以应对反爬虫
                 ####################################################################################
-                df2 = get_table_info(table) ## 应该可以更换不同的get_XXXX_info
+                df2 = get_table_info(table)  ## 应该可以更换不同的get_XXXX_info
                 df = df.append(df2)
             return df
 
@@ -299,10 +338,10 @@ class Tianyancha:
         def change_tap(table, df):
             TapCount = len(table.find_elements_by_tag_name('div'))
             for i in range(int(TapCount) - 3):
-                button = table.find_elements_by_tag_name('div')[i+3]
+                button = table.find_elements_by_tag_name('div')[i + 3]
                 driver.execute_script("arguments[0].click();", button)
                 time.sleep(2)
-                df2 = get_table_info(table) ## 应该可以更换不同的get_XXXX_info
+                df2 = get_table_info(table)  ## 应该可以更换不同的get_XXXX_info
                 # df2['日期'] = table.find_elements_by_tag_name('div')[i+3].text
                 df = df.append(df2, ignore_index=True)
             # df = df.drop(columns=['序号'])
@@ -319,7 +358,8 @@ class Tianyancha:
             # TODO:允许用户自主选择保留项目;帮助检查没有重复项
             if use_default_exception:
                 list_exception = ['recruit', 'tmInfo', 'holdingCompany', 'invest', 'bonus', 'firmProduct', 'jingpin', \
-                                  'bid', 'taxcredit', 'certificate', 'patent', 'copyright', 'product', 'importAndExport', \
+                                  'bid', 'taxcredit', 'certificate', 'patent', 'copyright', 'product',
+                                  'importAndExport', \
                                   'copyrightWorks', 'wechat', 'icp', 'announcementcourt', 'lawsuit', 'court', \
                                   'branch', 'touzi', 'judicialSale', 'bond', 'teamMember', 'check']
                 # 两个List取差异部分，只排除不在爬取范围内的名单。参考：https://stackoverflow.com/questions/1319338/combining-two-lists-and-removing-duplicates-without-removing-duplicates-in-orig/1319353#1319353
@@ -337,7 +377,7 @@ class Tianyancha:
             # 生成一个独一无二的十六位参数作为公司标记，一个公司对应一个，需要插入多个数据表
             id = keyword
             table_dict = {}
-            for x in range(len(tables)-2):
+            for x in range(len(tables) - 2):
                 name[x] = tables[x].get_attribute('id')
                 name[x] = name[x].replace(c, '')  # 可以用这个名称去匹配数据库
                 # 判断是表格还是表单
@@ -363,7 +403,7 @@ class Tianyancha:
 
                 # 公告的特殊处理：加入URL
                 elif (name[x] == 'announcement') and (('announcement' in table) or (table == ['all'])):
-                    print ('正在爬取' + 'announcement')
+                    print('正在爬取' + 'announcement')
                     try:
                         table_dict[name[x]] = get_announcement_info(driver)
                     except:
@@ -382,8 +422,8 @@ class Tianyancha:
                     # 判断此表格是否有翻页功能
                     if onclickflag == 1:
                         df = change_page(tables[x], df, driver)
-                #  if ontapflag == 1:
-                #      df = change_tap(tables[x], df)
+                    #  if ontapflag == 1:
+                    #      df = change_tap(tables[x], df)
                     table_dict[name[x]] = df
 
                 else:
@@ -396,7 +436,7 @@ class Tianyancha:
             return table_dict
 
         def gen_excel(table_dict, keyword):
-            with pd.ExcelWriter(keyword+'.xlsx') as writer:
+            with pd.ExcelWriter(keyword + '.xlsx') as writer:
                 for sheet_name in table_dict:
                     table_dict[sheet_name].to_excel(writer, sheet_name=sheet_name, index=None)
 
@@ -406,7 +446,7 @@ class Tianyancha:
                 list_dic.append((i, table_dict[i]))
             dic = OrderedDict(list_dic)
             list_json = WriterJson().odict_to_json(dic)
-            WriterJson().write_json(json_list=list_json, file_name=keyword+'.json')
+            WriterJson().write_json(json_list=list_json, file_name=keyword + '.json')
 
         time_start = time.time()
 
@@ -424,7 +464,6 @@ class Tianyancha:
         print('您的本次爬取共用时{}秒。'.format(int(time_end - time_start)))
         return table_dict
 
-
     # 定义批量爬取爬虫
     def tianyancha_scraper_batch(self, input_template='input.xlsx', change_page_interval=2, export='xlsx'):
         df_input = pd.read_excel(input_template, encoding='gb18030').dropna(axis=1, how='all')
@@ -439,7 +478,9 @@ class Tianyancha:
                     tables.append(df_input.iloc[i, j + 2])
 
             # 批量调取天眼查爬虫
-            table_dict = self.tianyancha_scraper(keyword=keyword, table=tables, change_page_interval=change_page_interval, export=export, quit_driver=False)
+            table_dict = self.tianyancha_scraper(keyword=keyword, table=tables,
+                                                 change_page_interval=change_page_interval, export=export,
+                                                 quit_driver=False)
             list_dicts.append(table_dict)
 
         # 全部运行完后退出浏览器
